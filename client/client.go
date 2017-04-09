@@ -1,6 +1,9 @@
 package client
 
 import (
+	"bytes"
+	"crypto/tls"
+	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -13,10 +16,13 @@ const (
 
 // Client is a10-cli　client
 type Client struct {
-	baseURL    *url.URL
-	user       string
-	password   string
+	baseURL  *url.URL
+	user     string
+	password string
+
 	httpClient *http.Client
+
+	token string
 }
 
 // Opts is an option used to generate a10.client.Client
@@ -24,6 +30,7 @@ type Opts struct {
 	user     string
 	password string
 	target   string
+	insecure bool
 }
 
 // NewClient returns new a10.client.Client
@@ -37,5 +44,32 @@ func NewClient(opts Opts) (*Client, error) {
 
 	client := &http.Client{}
 
-	return &Client{url, opts.user, opts.password, client}, nil
+	transport := &http.Transport{}
+	tlsConfig := &tls.Config{}
+	if opts.insecure == true {
+		tlsConfig.InsecureSkipVerify = true
+	}
+	transport.TLSClientConfig = tlsConfig
+	client.Transport = transport
+
+	return &Client{
+		baseURL:    url,
+		user:       opts.user,
+		password:   opts.password,
+		httpClient: client,
+	}, nil
+}
+
+func (c *Client) postJSON(path string, body []byte) (*http.Response, error) {
+	bodyReader := bytes.NewReader(body)
+	resp, err := c.httpClient.Post(path, "application/json", bodyReader)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode >= 400 {
+		resp.Body.Close()
+		return nil, fmt.Errorf("http request error, response code:%v", resp.StatusCode)
+	}
+	return resp, nil
 }

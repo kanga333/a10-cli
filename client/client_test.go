@@ -3,7 +3,11 @@ package client
 import "testing"
 
 func TestNewClient(t *testing.T) {
-	opts := Opts{"admin", "passwd", "127.0.0.1"}
+	opts := Opts{
+		user:     "admin",
+		password: "passwd",
+		target:   "127.0.0.1",
+	}
 	client, err := NewClient(opts)
 	if err != nil {
 		t.Errorf("should not raise error: %v", err)
