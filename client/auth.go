@@ -6,7 +6,8 @@ import (
 )
 
 const (
-	auth = "authenticate"
+	auth  = "authenticate"
+	close = "close"
 )
 
 type authInput struct {
@@ -49,5 +50,10 @@ func (c *Client) Auth() error {
 	}
 
 	c.token = out.SessionID
+	return nil
+}
+
+// Close is a function to session.close to a10
+func (c *Client) Close() error {
 	return nil
 }

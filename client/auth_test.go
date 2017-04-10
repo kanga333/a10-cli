@@ -77,3 +77,62 @@ func TestAuth(t *testing.T) {
 	}
 
 }
+
+func TestClose(t *testing.T) {
+	ts := httptest.NewTLSServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		if req.URL.Path != "/services/rest/V2.1/" {
+			t.Error("request URL should be /services/rest/V2.1/ but :", req.URL.Path)
+		}
+
+		if req.Method != "POST" {
+			t.Error("request method should be POST but: ", req.Method)
+		}
+
+		query := req.URL.Query()
+		if strings.Join(query["format"], "") != "json" {
+			t.Error("request QueryString should be format=json but :", query["json"])
+		}
+		if strings.Join(query["method"], "") != "close" {
+			t.Error("request QueryString should be method=close but :", query["method"])
+		}
+
+		body, _ := ioutil.ReadAll(req.Body)
+		if body != nil {
+			t.Error("request Body should be  but empty but :", body)
+		}
+
+		respJSON := ``
+		res.Header()["Content-Type"] = []string{"application/json"}
+		fmt.Fprint(res, respJSON)
+
+	}))
+	defer ts.Close()
+
+	u, _ := url.Parse(ts.URL)
+	opts := Opts{
+		user:     "admin",
+		password: "passwd",
+		target:   u.Host,
+		insecure: true,
+	}
+
+	client, err := NewClient(opts)
+	if err != nil {
+		t.Errorf("should not raise error: %v", err)
+	}
+
+	err = client.Close()
+	if err != nil {
+		t.Errorf("should not raise error: %v", err)
+	}
+
+	client.token = "FTNFPTD"
+
+	err = client.Close()
+	if err != nil {
+		t.Errorf("should not raise error: %v", err)
+	}
+	if client.token != "" {
+		t.Error("clinet.token after close() should be empty but", client.token)
+	}
+}
