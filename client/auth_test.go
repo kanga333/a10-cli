@@ -95,10 +95,13 @@ func TestClose(t *testing.T) {
 		if strings.Join(query["method"], "") != "close" {
 			t.Error("request QueryString should be method=close but :", query["method"])
 		}
+		if strings.Join(query["session_id"], "") != "FTNFPTD" {
+			t.Error("request QueryString should be session_id=FTNFPTD but :", query["method"])
+		}
 
 		body, _ := ioutil.ReadAll(req.Body)
-		if body != nil {
-			t.Error("request Body should be  but empty but :", body)
+		if len(body) != 0 {
+			t.Error("request Body should be empty but :", body)
 		}
 
 		respJSON := ``

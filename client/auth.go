@@ -55,5 +55,23 @@ func (c *Client) Auth() error {
 
 // Close is a function to session.close to a10
 func (c *Client) Close() error {
+	if c.token == "" {
+		return nil
+	}
+
+	parm := make(url.Values)
+	parm.Add("method", close)
+	parm.Add("format", format)
+	parm.Add("session_id", c.token)
+
+	url := c.baseURL.String() + "?" + parm.Encode()
+
+	resp, err := c.postJSON(url, nil)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	c.token = ""
 	return nil
 }
