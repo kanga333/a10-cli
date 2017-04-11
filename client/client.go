@@ -31,6 +31,7 @@ type Opts struct {
 	password string
 	target   string
 	insecure bool
+	proxy    string
 }
 
 // NewClient returns new a10.client.Client
@@ -50,6 +51,13 @@ func NewClient(opts Opts) (*Client, error) {
 		tlsConfig.InsecureSkipVerify = true
 	}
 	transport.TLSClientConfig = tlsConfig
+	if opts.proxy != "" {
+		proxy, err := url.Parse(opts.proxy)
+		if err != nil {
+			return nil, err
+		}
+		transport.Proxy = http.ProxyURL(proxy)
+	}
 	client.Transport = transport
 
 	return &Client{
