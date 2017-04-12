@@ -2,6 +2,7 @@ package client
 
 import (
 	"encoding/json"
+	"log"
 	"net/url"
 )
 
@@ -21,6 +22,7 @@ type authOutput struct {
 
 // Auth is a function to authenticate to a10
 func (c *Client) Auth() error {
+	log.Println("Start authentication.")
 	parm := make(url.Values)
 	parm.Add("method", auth)
 	parm.Add("format", format)
@@ -34,11 +36,13 @@ func (c *Client) Auth() error {
 
 	body, err := json.Marshal(in)
 	if err != nil {
+		log.Println("Error in creating authentication request.")
 		return err
 	}
 
 	resp, err := c.postJSON(url, body)
 	if err != nil {
+		log.Println("Error in aythentication request.")
 		return err
 	}
 	defer resp.Body.Close()
@@ -46,16 +50,20 @@ func (c *Client) Auth() error {
 	var out authOutput
 	err = json.NewDecoder(resp.Body).Decode(&out)
 	if err != nil {
+		log.Println("Error in parsing authentication request response.")
 		return err
 	}
 
 	c.token = out.SessionID
+	log.Println("Authentication is complete.")
 	return nil
 }
 
 // Close is a function to session.close to a10
 func (c *Client) Close() error {
+	log.Println("Start closing session.")
 	if c.token == "" {
+		log.Println("Session already closed.")
 		return nil
 	}
 
@@ -68,10 +76,12 @@ func (c *Client) Close() error {
 
 	resp, err := c.postJSON(url, nil)
 	if err != nil {
+		log.Println("Error in session close request.")
 		return err
 	}
 	defer resp.Body.Close()
 
 	c.token = ""
+	log.Println("Closing the session is complete.")
 	return nil
 }
