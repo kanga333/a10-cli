@@ -23,6 +23,16 @@ type authOutput struct {
 // Auth is a function to authenticate to a10
 func (c *Client) Auth() error {
 	log.Println("Start authentication.")
+
+	if c.token != "" {
+		log.Println("Currently authentication has already been completed.")
+		log.Println("Close the session and reauthenticate.")
+		err := c.Close()
+		if err != nil {
+			log.Println("Closing the session failed but processing continues.", err)
+		}
+	}
+
 	parm := make(url.Values)
 	parm.Add("method", auth)
 	parm.Add("format", format)
