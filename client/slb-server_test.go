@@ -118,7 +118,7 @@ func TestServerSearch(t *testing.T) {
 	client.token = "FTNFPTD"
 
 	h := Host{
-		Host: "8x4",
+		Host: "8X4",
 	}
 
 	s, err := client.ServerSearch(h)

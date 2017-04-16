@@ -1,7 +1,10 @@
 package client
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
+	"net/url"
 )
 
 const (
@@ -52,5 +55,40 @@ type Host struct {
 
 // ServerSearch is a function to slb.server.search to a10
 func (c *Client) ServerSearch(h Host) (*Server, error) {
-	return nil, fmt.Errorf("Unimplemented")
+	log.Println("Start closing session.")
+	if c.token == "" {
+		return nil, fmt.Errorf("Session is not authenticated")
+	}
+
+	parm := make(url.Values)
+	parm.Add("method", search)
+	parm.Add("format", format)
+	parm.Add("session_id", c.token)
+
+	url := c.baseURL.String() + "?" + parm.Encode()
+
+	body, err := json.Marshal(h)
+	if err != nil {
+		log.Println("Error in creating serverSearch request.")
+		return nil, err
+	}
+
+	resp, err := c.postJSON(url, body)
+	if err != nil {
+		log.Println("Error in serverSearch request.")
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var s *Server
+	err = json.NewDecoder(resp.Body).Decode(s)
+	if err != nil {
+		log.Println("Error in parsing serverSearch request response.")
+		return nil, err
+	}
+	if s == nil {
+		return nil, fmt.Errorf("Struct after JSON parsing is empty")
+	}
+
+	return s, nil
 }
