@@ -32,7 +32,7 @@ func TestAuth(t *testing.T) {
 		body, _ := ioutil.ReadAll(req.Body)
 
 		var jsonBody struct {
-			User     string `json:"user"`
+			UserName string `json:"username"`
 			Password string `json:"password"`
 		}
 
@@ -41,8 +41,8 @@ func TestAuth(t *testing.T) {
 			t.Error("request body should be decoded as json", string(body))
 		}
 
-		if jsonBody.User != "admin" {
-			t.Error("request body should have admin in the user column, but", jsonBody.User)
+		if jsonBody.UserName != "admin" {
+			t.Error("request body should have admin in the user column, but", jsonBody.UserName)
 		}
 		if jsonBody.Password != "passwd" {
 			t.Error("request body should have passwd in the password column, but", jsonBody.Password)
@@ -57,7 +57,7 @@ func TestAuth(t *testing.T) {
 
 	u, _ := url.Parse(ts.URL)
 	opts := Opts{
-		user:     "admin",
+		username: "admin",
 		password: "passwd",
 		target:   u.Host,
 		insecure: true,
@@ -113,7 +113,7 @@ func TestClose(t *testing.T) {
 
 	u, _ := url.Parse(ts.URL)
 	opts := Opts{
-		user:     "admin",
+		username: "admin",
 		password: "passwd",
 		target:   u.Host,
 		insecure: true,

@@ -18,7 +18,7 @@ const (
 // Client is a10-cli　client
 type Client struct {
 	baseURL  *url.URL
-	user     string
+	username string
 	password string
 
 	httpClient *http.Client
@@ -28,7 +28,7 @@ type Client struct {
 
 // Opts is an option used to generate a10.client.Client
 type Opts struct {
-	user     string
+	username string
 	password string
 	target   string
 	insecure bool
@@ -63,7 +63,7 @@ func NewClient(opts Opts) (*Client, error) {
 
 	return &Client{
 		baseURL:    url,
-		user:       opts.user,
+		username:   opts.username,
 		password:   opts.password,
 		httpClient: client,
 	}, nil

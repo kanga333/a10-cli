@@ -13,18 +13,20 @@ const (
 
 //Port represents slb.server.port object of A10.
 type Port struct {
-	Status       bool   `json:"user"`
-	Weight       int    `json:"password"`
-	NoSsl        bool   `json:"no_ssl"`
+	PortNum      int    `json:"port_num"`
+	Protocol     int    `json:"protocol"`
+	Status       int8   `json:"user"`
+	Weight       int    `json:"weight"`
+	NoSsl        int8   `json:"no_ssl"`
 	ConnLimit    int    `json:"conn_limit"`
-	ConnLimitLog bool   `json:"conn_limit_log"`
+	ConnLimitLog int8   `json:"conn_limit_log"`
 	ConnResume   int    `json:"conn_resume"`
 	Template     string `json:"template"`
-	StatsSata    bool   `json:"stats_data"`
+	StatsSata    int8   `json:"stats_data"`
 	//This object is defined as Union - 1966932898,
 	//and there is a possibility that follow_port may be entered instead
 	HealthMonitor string `json:"health_monitor"`
-	ExtendedStats bool   `json:"extended_stats"`
+	ExtendedStats int8   `json:"extended_stats"`
 }
 
 //Server represents slb.server object of A10.
@@ -34,14 +36,14 @@ type Server struct {
 	GslbExternalAddress string `json:"gslb_external_address"`
 	Weight              int    `json:"weight"`
 	HealthMonitor       string `json:"health_monitor"`
-	Status              bool   `json:"status"`
-	ConnLimit           bool   `json:"conn_limit"`
-	ConnLimitLog        bool   `json:"conn_limit_log"`
-	ConnResume          bool   `json:"conn_resume"`
-	StatsData           bool   `json:"stats_data"`
-	ExtendedStats       string `json:"extended_stats"`
-	SlowStart           bool   `json:"slow_start"`
-	SpoofingCache       bool   `json:"spoofing_cache"`
+	Status              int8   `json:"status"`
+	ConnLimit           int    `json:"conn_limit"`
+	ConnLimitLog        int8   `json:"conn_limit_log"`
+	ConnResume          int    `json:"conn_resume"`
+	StatsData           int8   `json:"stats_data"`
+	ExtendedStats       int8   `json:"extended_stats"`
+	SlowStart           int8   `json:"slow_start"`
+	SpoofingCache       int8   `json:"spoofing_cache"`
 	Template            string `json:"template"`
 	PortList            []Port `json:"port_list"`
 }
@@ -55,7 +57,7 @@ type Host struct {
 
 // ServerSearch is a function to slb.server.search to a10
 func (c *Client) ServerSearch(h Host) (*Server, error) {
-	log.Println("Start closing session.")
+	log.Println("Start server search.")
 	if c.token == "" {
 		return nil, fmt.Errorf("Session is not authenticated")
 	}
@@ -79,16 +81,17 @@ func (c *Client) ServerSearch(h Host) (*Server, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	var s *Server
-	err = json.NewDecoder(resp.Body).Decode(s)
+	var jsonBody struct {
+		Server Server `json:"server"`
+	}
+	err = json.NewDecoder(resp.Body).Decode(&jsonBody)
 	if err != nil {
 		log.Println("Error in parsing serverSearch request response.")
 		return nil, err
 	}
-	if s == nil {
+	if &jsonBody == nil {
 		return nil, fmt.Errorf("Struct after JSON parsing is empty")
 	}
 
-	return s, nil
+	return &jsonBody.Server, nil
 }

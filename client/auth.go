@@ -12,7 +12,7 @@ const (
 )
 
 type authInput struct {
-	User     string `json:"user"`
+	UserName string `json:"username"`
 	Password string `json:"password"`
 }
 
@@ -40,7 +40,7 @@ func (c *Client) Auth() error {
 	url := c.baseURL.String() + "?" + parm.Encode()
 
 	in := authInput{
-		User:     c.user,
+		UserName: c.username,
 		Password: c.password,
 	}
 

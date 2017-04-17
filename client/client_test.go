@@ -10,7 +10,7 @@ import (
 
 func TestNewClient(t *testing.T) {
 	opts := Opts{
-		user:     "admin",
+		username: "admin",
 		password: "passwd",
 		target:   "127.0.0.1",
 	}
@@ -19,8 +19,8 @@ func TestNewClient(t *testing.T) {
 		t.Errorf("should not raise error: %v", err)
 	}
 
-	if client.user != "admin" {
-		t.Error("should be admin but :", client.user)
+	if client.username != "admin" {
+		t.Error("should be admin but :", client.username)
 	}
 
 	expect := "https://127.0.0.1/services/rest/V2.1/"
@@ -37,7 +37,7 @@ func TestProxy(t *testing.T) {
 	defer ts.Close()
 
 	opts := Opts{
-		user:     "admin",
+		username: "admin",
 		password: "passwd",
 		target:   "127.0.0.1",
 		proxy:    ts.URL,

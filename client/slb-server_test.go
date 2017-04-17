@@ -105,7 +105,7 @@ func TestServerSearch(t *testing.T) {
 
 	u, _ := url.Parse(ts.URL)
 	opts := Opts{
-		user:     "admin",
+		username: "admin",
 		password: "passwd",
 		target:   u.Host,
 		insecure: true,
@@ -122,6 +122,7 @@ func TestServerSearch(t *testing.T) {
 	}
 
 	s, err := client.ServerSearch(h)
+
 	if err != nil {
 		t.Fatalf("should not raise error: %v", err)
 	}
@@ -131,7 +132,7 @@ func TestServerSearch(t *testing.T) {
 	if s.Weight != 96 {
 		t.Error("s.Weight after ServerSearch() should be 96 but", s.Weight)
 	}
-	if s.Status != false {
+	if s.Status != 0 {
 		t.Error("s.Status after ServerSearch() should be false but", s.Status)
 	}
 	if len(s.PortList) != 2 {
@@ -139,7 +140,7 @@ func TestServerSearch(t *testing.T) {
 	}
 	p := s.PortList[0]
 
-	if p.Status != false {
+	if p.Status != 0 {
 		t.Error("p.Status after ServerSearch() should be false but", p.Status)
 	}
 
