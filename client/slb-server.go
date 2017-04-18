@@ -13,39 +13,39 @@ const (
 
 //Port represents slb.server.port object of A10.
 type Port struct {
-	PortNum      int    `json:"port_num"`
-	Protocol     int    `json:"protocol"`
-	Status       int8   `json:"user"`
-	Weight       int    `json:"weight"`
-	NoSsl        int8   `json:"no_ssl"`
-	ConnLimit    int    `json:"conn_limit"`
-	ConnLimitLog int8   `json:"conn_limit_log"`
-	ConnResume   int    `json:"conn_resume"`
-	Template     string `json:"template"`
-	StatsSata    int8   `json:"stats_data"`
+	PortNum      int     `json:"port_num"`
+	Protocol     int     `json:"protocol"`
+	Status       a10Bool `json:"user"`
+	Weight       int     `json:"weight"`
+	NoSsl        a10Bool `json:"no_ssl"`
+	ConnLimit    int     `json:"conn_limit"`
+	ConnLimitLog a10Bool `json:"conn_limit_log"`
+	ConnResume   int     `json:"conn_resume"`
+	Template     string  `json:"template"`
+	StatsSata    a10Bool `json:"stats_data"`
 	//This object is defined as Union - 1966932898,
 	//and there is a possibility that follow_port may be entered instead
-	HealthMonitor string `json:"health_monitor"`
-	ExtendedStats int8   `json:"extended_stats"`
+	HealthMonitor string  `json:"health_monitor"`
+	ExtendedStats a10Bool `json:"extended_stats"`
 }
 
 //Server represents slb.server object of A10.
 type Server struct {
-	Name                string `json:"name"`
-	Host                string `json:"host"`
-	GslbExternalAddress string `json:"gslb_external_address"`
-	Weight              int    `json:"weight"`
-	HealthMonitor       string `json:"health_monitor"`
-	Status              int8   `json:"status"`
-	ConnLimit           int    `json:"conn_limit"`
-	ConnLimitLog        int8   `json:"conn_limit_log"`
-	ConnResume          int    `json:"conn_resume"`
-	StatsData           int8   `json:"stats_data"`
-	ExtendedStats       int8   `json:"extended_stats"`
-	SlowStart           int8   `json:"slow_start"`
-	SpoofingCache       int8   `json:"spoofing_cache"`
-	Template            string `json:"template"`
-	PortList            []Port `json:"port_list"`
+	Name                string  `json:"name"`
+	Host                string  `json:"host"`
+	GslbExternalAddress string  `json:"gslb_external_address"`
+	Weight              int     `json:"weight"`
+	HealthMonitor       string  `json:"health_monitor"`
+	Status              a10Bool `json:"status"`
+	ConnLimit           int     `json:"conn_limit"`
+	ConnLimitLog        a10Bool `json:"conn_limit_log"`
+	ConnResume          int     `json:"conn_resume"`
+	StatsData           a10Bool `json:"stats_data"`
+	ExtendedStats       a10Bool `json:"extended_stats"`
+	SlowStart           a10Bool `json:"slow_start"`
+	SpoofingCache       a10Bool `json:"spoofing_cache"`
+	Template            string  `json:"template"`
+	PortList            []Port  `json:"port_list"`
 }
 
 //Host represents slb.server.host object of A10.

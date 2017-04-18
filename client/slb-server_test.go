@@ -132,7 +132,7 @@ func TestServerSearch(t *testing.T) {
 	if s.Weight != 96 {
 		t.Error("s.Weight after ServerSearch() should be 96 but", s.Weight)
 	}
-	if s.Status != 0 {
+	if s.Status != false {
 		t.Error("s.Status after ServerSearch() should be false but", s.Status)
 	}
 	if len(s.PortList) != 2 {
@@ -140,7 +140,7 @@ func TestServerSearch(t *testing.T) {
 	}
 	p := s.PortList[0]
 
-	if p.Status != 0 {
+	if p.Status != false {
 		t.Error("p.Status after ServerSearch() should be false but", p.Status)
 	}
 
