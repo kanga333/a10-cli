@@ -57,10 +57,10 @@ func TestAuth(t *testing.T) {
 
 	u, _ := url.Parse(ts.URL)
 	opts := Opts{
-		username: "admin",
-		password: "passwd",
-		target:   u.Host,
-		insecure: true,
+		Username: "admin",
+		Password: "passwd",
+		Target:   u.Host,
+		Insecure: true,
 	}
 
 	client, err := NewClient(opts)
@@ -113,10 +113,10 @@ func TestClose(t *testing.T) {
 
 	u, _ := url.Parse(ts.URL)
 	opts := Opts{
-		username: "admin",
-		password: "passwd",
-		target:   u.Host,
-		insecure: true,
+		Username: "admin",
+		Password: "passwd",
+		Target:   u.Host,
+		Insecure: true,
 	}
 
 	client, err := NewClient(opts)

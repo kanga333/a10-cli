@@ -10,9 +10,9 @@ import (
 
 func TestNewClient(t *testing.T) {
 	opts := Opts{
-		username: "admin",
-		password: "passwd",
-		target:   "127.0.0.1",
+		Username: "admin",
+		Password: "passwd",
+		Target:   "127.0.0.1",
 	}
 	client, err := NewClient(opts)
 	if err != nil {
@@ -37,10 +37,10 @@ func TestProxy(t *testing.T) {
 	defer ts.Close()
 
 	opts := Opts{
-		username: "admin",
-		password: "passwd",
-		target:   "127.0.0.1",
-		proxy:    ts.URL,
+		Username: "admin",
+		Password: "passwd",
+		Target:   "127.0.0.1",
+		Proxy:    ts.URL,
 	}
 
 	client, err := NewClient(opts)

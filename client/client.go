@@ -28,16 +28,16 @@ type Client struct {
 
 // Opts is an option used to generate a10.client.Client
 type Opts struct {
-	username string
-	password string
-	target   string
-	insecure bool
-	proxy    string
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	Target   string `yaml:"target"`
+	Insecure bool   `yaml:"insecure"`
+	Proxy    string `yaml:"proxy"`
 }
 
 // NewClient returns new a10.client.Client
 func NewClient(opts Opts) (*Client, error) {
-	baseURL := scheme + opts.target + baseURI
+	baseURL := scheme + opts.Target + baseURI
 
 	url, err := url.Parse(baseURL)
 	if err != nil {
@@ -48,12 +48,12 @@ func NewClient(opts Opts) (*Client, error) {
 
 	transport := &http.Transport{}
 	tlsConfig := &tls.Config{}
-	if opts.insecure == true {
+	if opts.Insecure == true {
 		tlsConfig.InsecureSkipVerify = true
 	}
 	transport.TLSClientConfig = tlsConfig
-	if opts.proxy != "" {
-		proxy, err := url.Parse(opts.proxy)
+	if opts.Proxy != "" {
+		proxy, err := url.Parse(opts.Proxy)
 		if err != nil {
 			return nil, err
 		}
@@ -63,8 +63,8 @@ func NewClient(opts Opts) (*Client, error) {
 
 	return &Client{
 		baseURL:    url,
-		username:   opts.username,
-		password:   opts.password,
+		username:   opts.Username,
+		password:   opts.Password,
 		httpClient: client,
 	}, nil
 }
