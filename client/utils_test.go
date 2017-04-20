@@ -11,9 +11,9 @@ const (
 	illegalData = `{"boolean":100}`
 )
 
-func TestA10BooL(t *testing.T) {
+func TestnumBool(t *testing.T) {
 	type asBoolean struct {
-		Boolean a10Bool `json:"boolean"`
+		Boolean numBool `json:"boolean"`
 	}
 
 	var asTrue asBoolean

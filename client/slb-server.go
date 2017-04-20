@@ -15,18 +15,18 @@ const (
 type Port struct {
 	PortNum      int     `json:"port_num"`
 	Protocol     int     `json:"protocol"`
-	Status       a10Bool `json:"user"`
+	Status       numBool `json:"user"`
 	Weight       int     `json:"weight"`
-	NoSsl        a10Bool `json:"no_ssl"`
+	NoSsl        numBool `json:"no_ssl"`
 	ConnLimit    int     `json:"conn_limit"`
-	ConnLimitLog a10Bool `json:"conn_limit_log"`
+	ConnLimitLog numBool `json:"conn_limit_log"`
 	ConnResume   int     `json:"conn_resume"`
 	Template     string  `json:"template"`
-	StatsSata    a10Bool `json:"stats_data"`
+	StatsSata    numBool `json:"stats_data"`
 	//This object is defined as Union - 1966932898,
 	//and there is a possibility that follow_port may be entered instead
 	HealthMonitor string  `json:"health_monitor"`
-	ExtendedStats a10Bool `json:"extended_stats"`
+	ExtendedStats numBool `json:"extended_stats"`
 }
 
 //Server represents slb.server object of A10.
@@ -36,14 +36,14 @@ type Server struct {
 	GslbExternalAddress string  `json:"gslb_external_address"`
 	Weight              int     `json:"weight"`
 	HealthMonitor       string  `json:"health_monitor"`
-	Status              a10Bool `json:"status"`
+	Status              numBool `json:"status"`
 	ConnLimit           int     `json:"conn_limit"`
-	ConnLimitLog        a10Bool `json:"conn_limit_log"`
+	ConnLimitLog        numBool `json:"conn_limit_log"`
 	ConnResume          int     `json:"conn_resume"`
-	StatsData           a10Bool `json:"stats_data"`
-	ExtendedStats       a10Bool `json:"extended_stats"`
-	SlowStart           a10Bool `json:"slow_start"`
-	SpoofingCache       a10Bool `json:"spoofing_cache"`
+	StatsData           numBool `json:"stats_data"`
+	ExtendedStats       numBool `json:"extended_stats"`
+	SlowStart           numBool `json:"slow_start"`
+	SpoofingCache       numBool `json:"spoofing_cache"`
 	Template            string  `json:"template"`
 	PortList            []Port  `json:"port_list"`
 }

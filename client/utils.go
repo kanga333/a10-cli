@@ -2,17 +2,17 @@ package client
 
 import "fmt"
 
-//A10Bool is a boolean value that converts between 0 and 1
-type a10Bool bool
+//numBool is a boolean value that converts between 0 and 1
+type numBool bool
 
-func (a a10Bool) MarshalJSON() ([]byte, error) {
+func (a numBool) MarshalJSON() ([]byte, error) {
 	if a {
 		return []byte("1"), nil
 	}
 	return []byte("0"), nil
 }
 
-func (a *a10Bool) UnmarshalJSON(data []byte) error {
+func (a *numBool) UnmarshalJSON(data []byte) error {
 	asString := string(data)
 	switch asString {
 	case "0":
