@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"io/ioutil"
@@ -8,18 +8,20 @@ import (
 	"github.com/kanga333/a10-cli/client"
 )
 
-type config struct {
+// Config is a structure that expresses the setting required by a10
+type Config struct {
 	A10  client.Opts `yaml:"a10cli"`
 	Host string      `yaml:"host"`
 }
 
-func loadConf(path string) (*config, error) {
+// LoadConf reads the yaml setting from the specified path
+func LoadConf(path string) (*Config, error) {
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
 
-	var c config
+	var c Config
 	err = yaml.Unmarshal(buf, &c)
 	if err != nil {
 		return nil, err

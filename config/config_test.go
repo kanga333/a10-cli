@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"io/ioutil"
@@ -27,7 +27,7 @@ func TestLoadConft(t *testing.T) {
 		t.Fatalf("shoud not raise error: %v", err)
 	}
 
-	conf, err := loadConf(file.Name())
+	conf, err := LoadConf(file.Name())
 	if err != nil {
 		t.Fatalf("shoud not raise error: %v", err)
 	}
