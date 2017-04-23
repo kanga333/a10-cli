@@ -85,7 +85,9 @@ func TestServerSearch(t *testing.T) {
 
 		body, _ := ioutil.ReadAll(req.Body)
 
-		var h Host
+		var h struct {
+			Host string `json:"Host"`
+		}
 
 		err := json.Unmarshal(body, &h)
 		if err != nil {
@@ -117,11 +119,7 @@ func TestServerSearch(t *testing.T) {
 	}
 	client.token = "FTNFPTD"
 
-	h := Host{
-		Host: "8X4",
-	}
-
-	s, err := client.ServerSearch(h)
+	s, err := client.ServerSearch("8X4")
 
 	if err != nil {
 		t.Fatalf("should not raise error: %v", err)

@@ -22,7 +22,7 @@ type Port struct {
 	ConnLimitLog numBool `json:"conn_limit_log"`
 	ConnResume   int     `json:"conn_resume"`
 	Template     string  `json:"template"`
-	StatsSata    numBool `json:"stats_data"`
+	StatsData    numBool `json:"stats_data"`
 	//This object is defined as Union - 1966932898,
 	//and there is a possibility that follow_port may be entered instead
 	HealthMonitor string  `json:"health_monitor"`
@@ -48,15 +48,8 @@ type Server struct {
 	PortList            []Port  `json:"port_list"`
 }
 
-//Host represents slb.server.host object of A10.
-//It is used by input of ServerSeach ().
-//Normally it is a unique value that contains the ip address of host.
-type Host struct {
-	Host string `json:"host"`
-}
-
 // ServerSearch is a function to slb.server.search to a10
-func (c *Client) ServerSearch(h Host) (*Server, error) {
+func (c *Client) ServerSearch(h string) (*Server, error) {
 	log.Println("Start server search.")
 	if c.token == "" {
 		return nil, fmt.Errorf("Session is not authenticated")
@@ -69,7 +62,12 @@ func (c *Client) ServerSearch(h Host) (*Server, error) {
 
 	url := c.baseURL.String() + "?" + parm.Encode()
 
-	body, err := json.Marshal(h)
+	var input struct {
+		Host string `json:"host"`
+	}
+	input.Host = h
+
+	body, err := json.Marshal(input)
 	if err != nil {
 		log.Println("Error in creating serverSearch request.")
 		return nil, err
