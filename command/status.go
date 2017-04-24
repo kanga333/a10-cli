@@ -18,7 +18,7 @@ Host:\t{{.Host}}
 Weight:{{.Weight}}
 
 PortStatus
-{{rang .PortList}}
+{{range .PortList}}
 PortNum:\t{{.PortNum}}({{.Status | boolToState}})
 {{end}}
 `
@@ -60,7 +60,7 @@ func printStatus(s *client.Server) {
 	tmpl.Execute(os.Stdout, s)
 }
 
-func boolToState(b bool) string {
+func boolToState(b client.NumBool) string {
 	if b {
 		return "active"
 	}
