@@ -13,13 +13,13 @@ import (
 
 const templ = `ServerStatus: ({{.Status | boolToState}})
 
-Name:\t{{.Name}}
-Host:\t{{.Host}}
-Weight:{{.Weight}}
+Name:	{{.Name}}
+Host:	{{.Host}}
+Weight:	{{.Weight}}
 
 PortStatus
 {{range .PortList}}
-PortNum:\t{{.PortNum}}({{.Status | boolToState}})
+PortNum:	{{.PortNum}}({{.Status | boolToState}})
 {{end}}
 `
 
