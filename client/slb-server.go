@@ -9,6 +9,7 @@ import (
 
 const (
 	search = "slb.server.search"
+	create = "slb.server.create"
 )
 
 //Port represents slb.server.port object of A10.
@@ -92,4 +93,34 @@ func (c *Client) ServerSearch(h string) (*Server, error) {
 	}
 
 	return &jsonBody.Server, nil
+}
+
+// ServerCreate is a function to slb.server.create to a10
+func (c *Client) ServerCreate(s *Server) error {
+	log.Println("Start server create.")
+	if c.token == "" {
+		return fmt.Errorf("Session is not authenticated")
+	}
+
+	parm := make(url.Values)
+	parm.Add("method", create)
+	parm.Add("format", format)
+	parm.Add("session_id", c.token)
+
+	url := c.baseURL.String() + "?" + parm.Encode()
+
+	body, err := json.Marshal(s)
+	if err != nil {
+		log.Println("Error in creating server create request.")
+		return err
+	}
+
+	resp, err := c.postJSON(url, body)
+	if err != nil {
+		log.Println("Error in server create request.")
+		return err
+	}
+	defer resp.Body.Close()
+
+	return nil
 }
