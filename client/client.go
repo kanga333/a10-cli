@@ -83,3 +83,29 @@ func (c *Client) postJSON(path string, body []byte) (*http.Response, error) {
 	}
 	return resp, nil
 }
+
+//AuthenticatedRequest is a function of the request to the authenticated A10 API.
+func (c *Client) AuthenticatedRequest(method string, body []byte) (*http.Response, error) {
+	if c.token == "" {
+		return nil, fmt.Errorf("Session is not authenticated")
+	}
+
+	parm := make(url.Values)
+	parm.Add("method", method)
+	parm.Add("format", format)
+	parm.Add("session_id", c.token)
+	url := c.baseURL.String() + "?" + parm.Encode()
+
+	return c.postJSON(url, body)
+}
+
+//Request is a function of the request to the A10 API.
+func (c *Client) Request(method string, body []byte) (*http.Response, error) {
+
+	parm := make(url.Values)
+	parm.Add("method", method)
+	parm.Add("format", format)
+	url := c.baseURL.String() + "?" + parm.Encode()
+
+	return c.postJSON(url, body)
+}

@@ -13,7 +13,7 @@ const (
 
 func TestnumBool(t *testing.T) {
 	type asBoolean struct {
-		Boolean numBool `json:"boolean"`
+		Boolean NumBool `json:"boolean"`
 	}
 
 	var asTrue asBoolean
