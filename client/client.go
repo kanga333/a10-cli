@@ -84,28 +84,27 @@ func (c *Client) postJSON(path string, body []byte) (*http.Response, error) {
 	return resp, nil
 }
 
-//AuthenticatedRequest is a function of the request to the authenticated A10 API.
-func (c *Client) AuthenticatedRequest(method string, body []byte) (*http.Response, error) {
+//CreateSessionURL creates the URL of A10 API with session_id.
+func (c *Client) CreateSessionURL(method string) (string, error) {
 	if c.token == "" {
-		return nil, fmt.Errorf("Session is not authenticated")
+		return "", fmt.Errorf("Session is not authenticated")
 	}
 
-	parm := make(url.Values)
-	parm.Add("method", method)
-	parm.Add("format", format)
-	parm.Add("session_id", c.token)
-	url := c.baseURL.String() + "?" + parm.Encode()
+	v := make(url.Values)
+	v.Add("method", method)
+	v.Add("format", format)
+	v.Add("session_id", c.token)
+	u := c.baseURL.String() + "?" + v.Encode()
 
-	return c.postJSON(url, body)
+	return u, nil
 }
 
-//Request is a function of the request to the A10 API.
-func (c *Client) Request(method string, body []byte) (*http.Response, error) {
+//CreateURL creates the URL of A10 API.
+func (c *Client) CreateURL(method string) string {
+	v := make(url.Values)
+	v.Add("method", method)
+	v.Add("format", format)
+	u := c.baseURL.String() + "?" + v.Encode()
 
-	parm := make(url.Values)
-	parm.Add("method", method)
-	parm.Add("format", format)
-	url := c.baseURL.String() + "?" + parm.Encode()
-
-	return c.postJSON(url, body)
+	return u
 }

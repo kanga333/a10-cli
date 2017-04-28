@@ -3,7 +3,6 @@ package client
 import (
 	"encoding/json"
 	"log"
-	"net/url"
 )
 
 const (
@@ -33,11 +32,7 @@ func (c *Client) Auth() error {
 		}
 	}
 
-	parm := make(url.Values)
-	parm.Add("method", auth)
-	parm.Add("format", format)
-
-	url := c.baseURL.String() + "?" + parm.Encode()
+	url := c.CreateURL(auth)
 
 	in := authInput{
 		UserName: c.username,
@@ -77,12 +72,11 @@ func (c *Client) Close() error {
 		return nil
 	}
 
-	parm := make(url.Values)
-	parm.Add("method", close)
-	parm.Add("format", format)
-	parm.Add("session_id", c.token)
-
-	url := c.baseURL.String() + "?" + parm.Encode()
+	url, err := c.CreateSessionURL(close)
+	if err != nil {
+		log.Println("Error in creating session url.")
+		return err
+	}
 
 	resp, err := c.postJSON(url, nil)
 	if err != nil {

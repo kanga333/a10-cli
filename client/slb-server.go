@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/url"
 )
 
 const (
@@ -52,16 +51,12 @@ type Server struct {
 // ServerSearch is a function to slb.server.search to a10
 func (c *Client) ServerSearch(h string) (*Server, error) {
 	log.Println("Start server search.")
-	if c.token == "" {
-		return nil, fmt.Errorf("Session is not authenticated")
+
+	url, err := c.CreateSessionURL(search)
+	if err != nil {
+		log.Println("Error in creating session url.")
+		return nil, err
 	}
-
-	parm := make(url.Values)
-	parm.Add("method", search)
-	parm.Add("format", format)
-	parm.Add("session_id", c.token)
-
-	url := c.baseURL.String() + "?" + parm.Encode()
 
 	var input struct {
 		Host string `json:"host"`
@@ -98,16 +93,12 @@ func (c *Client) ServerSearch(h string) (*Server, error) {
 // ServerCreate is a function to slb.server.create to a10
 func (c *Client) ServerCreate(s *Server) error {
 	log.Println("Start server create.")
-	if c.token == "" {
-		return fmt.Errorf("Session is not authenticated")
+
+	url, err := c.CreateSessionURL(create)
+	if err != nil {
+		log.Println("Error in creating session url.")
+		return err
 	}
-
-	parm := make(url.Values)
-	parm.Add("method", create)
-	parm.Add("format", format)
-	parm.Add("session_id", c.token)
-
-	url := c.baseURL.String() + "?" + parm.Encode()
 
 	body, err := json.Marshal(s)
 	if err != nil {
