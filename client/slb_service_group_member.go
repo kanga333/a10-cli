@@ -7,6 +7,7 @@ import (
 
 const (
 	memberCreate = "slb.service_group.member.create"
+	memberDelete = "slb.service_group.member.delete"
 )
 
 //SGNameAndMember represents slb.service_group.member io object of A10.
@@ -17,15 +18,15 @@ type SGNameAndMember struct {
 
 //Member represents slb.service_group.member member object of A10.
 type Member struct {
-	Server    string `json:"server"`
-	Port      int    `json:"port"`
-	Template  string `json:"template"`
-	Priority  int    `json:"priority"`
-	Status    int    `json:"status"`
-	StatsData int    `json:"stats_data"`
+	Server    string   `json:"server"`
+	Port      int      `json:"port"`
+	Template  *string  `json:"template,omitempty"`
+	Priority  *int     `json:"priority,omitempty"`
+	Status    *NumBool `json:"status,omitempty"`
+	StatsData *NumBool `json:"stats_data,omitempty"`
 }
 
-//ServiceGroupMemberCreate s a function to slb.service_group.member.create to a10.
+//ServiceGroupMemberCreate is a function to slb.service_group.member.create to a10.
 func (c *Client) ServiceGroupMemberCreate(m *SGNameAndMember) error {
 	log.Println("Start member create.")
 
@@ -38,6 +39,32 @@ func (c *Client) ServiceGroupMemberCreate(m *SGNameAndMember) error {
 	body, err := json.Marshal(m)
 	if err != nil {
 		log.Println("Error in creating server create request.")
+		return err
+	}
+
+	resp, err := c.postJSON(url, body)
+	if err != nil {
+		log.Println("Error in server create request.")
+		return err
+	}
+	defer resp.Body.Close()
+
+	return nil
+}
+
+//ServiceGroupMemberDelete is a function to slb.service_group.member.delete to a10.
+func (c *Client) ServiceGroupMemberDelete(m *SGNameAndMember) error {
+	log.Println("Start member delete.")
+
+	url, err := c.CreateSessionURL(memberDelete)
+	if err != nil {
+		log.Println("Error in creating session url.")
+		return err
+	}
+
+	body, err := json.Marshal(m)
+	if err != nil {
+		log.Println("Error in creating server delete request.")
 		return err
 	}
 
