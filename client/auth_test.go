@@ -3,7 +3,6 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -29,23 +28,21 @@ func TestAuth(t *testing.T) {
 			t.Error("request QueryString should be method=authenticate but :", query["method"])
 		}
 
-		body, _ := ioutil.ReadAll(req.Body)
-
-		var jsonBody struct {
+		var auth struct {
 			UserName string `json:"username"`
 			Password string `json:"password"`
 		}
-
-		err := json.Unmarshal(body, &jsonBody)
+		decoder := json.NewDecoder(req.Body)
+		err := decoder.Decode(&auth)
 		if err != nil {
-			t.Error("request body should be decoded as json", string(body))
+			t.Error("request body should be decoded as json", err)
 		}
 
-		if jsonBody.UserName != "admin" {
-			t.Error("request body should have admin in the user column, but", jsonBody.UserName)
+		if auth.UserName != "admin" {
+			t.Error("request body should have admin in the user column, but", auth.UserName)
 		}
-		if jsonBody.Password != "passwd" {
-			t.Error("request body should have passwd in the password column, but", jsonBody.Password)
+		if auth.Password != "passwd" {
+			t.Error("request body should have passwd in the password column, but", auth.Password)
 		}
 
 		respJSON := `{"session_id": "FTNFPTD"}`
@@ -89,19 +86,11 @@ func TestClose(t *testing.T) {
 		}
 
 		query := req.URL.Query()
-		if strings.Join(query["format"], "") != "json" {
-			t.Error("request QueryString should be format=json but :", query["json"])
-		}
 		if strings.Join(query["method"], "") != "close" {
 			t.Error("request QueryString should be method=close but :", query["method"])
 		}
 		if strings.Join(query["session_id"], "") != "FTNFPTD" {
 			t.Error("request QueryString should be session_id=FTNFPTD but :", query["method"])
-		}
-
-		body, _ := ioutil.ReadAll(req.Body)
-		if len(body) != 0 {
-			t.Error("request Body should be empty but :", body)
 		}
 
 		respJSON := ``

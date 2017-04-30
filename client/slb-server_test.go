@@ -3,10 +3,10 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -67,41 +67,30 @@ func TestServerSearch(t *testing.T) {
 		if req.URL.Path != "/services/rest/V2.1/" {
 			t.Error("request URL should be /services/rest/V2.1/ but :", req.URL.Path)
 		}
-
 		if req.Method != "POST" {
 			t.Error("request method should be POST but: ", req.Method)
 		}
-
 		query := req.URL.Query()
-		if strings.Join(query["format"], "") != "json" {
-			t.Error("request QueryString should be format=json but :", query["json"])
-		}
 		if strings.Join(query["method"], "") != "slb.server.search" {
 			t.Error("request QueryString should be method=slb.server.search but :", query["method"])
 		}
-		if strings.Join(query["session_id"], "") != "FTNFPTD" {
-			t.Error("request QueryString should be session_id=FTNFPTD but :", query["method"])
-		}
 
-		body, _ := ioutil.ReadAll(req.Body)
-
-		var h struct {
+		var host struct {
 			Host string `json:"Host"`
 		}
-
-		err := json.Unmarshal(body, &h)
+		decoder := json.NewDecoder(req.Body)
+		err := decoder.Decode(&host)
 		if err != nil {
-			t.Error("request body should be decoded as json", string(body))
+			t.Error("request body should be decoded as json", err)
 		}
 
-		if h.Host != "8X4" {
-			t.Error("request body should have 8X4 in the name column, but", h.Host)
+		if host.Host != "8X4" {
+			t.Error("request body should have 8X4 in the name column, but", host.Host)
 		}
 
 		respJSON := testServerData
 		res.Header()["Content-Type"] = []string{"application/json"}
 		fmt.Fprint(res, respJSON)
-
 	}))
 	defer ts.Close()
 
@@ -119,34 +108,22 @@ func TestServerSearch(t *testing.T) {
 	}
 	client.token = "FTNFPTD"
 
-	s, err := client.ServerSearch("8X4")
+	server, err := client.ServerSearch("8X4")
+
+	var expectServer struct {
+		Server Server `json:"server"`
+	}
+	err = json.Unmarshal([]byte(testServerData), &expectServer)
+	if err != nil {
+		t.Error("testServerData should be decoded as json")
+	}
 
 	if err != nil {
 		t.Fatalf("should not raise error: %v", err)
 	}
-	if s.Name != "8" {
-		t.Error("s.Name after ServerSearch() should be 8 but", s.Name)
-	}
-	if s.Weight != 96 {
-		t.Error("s.Weight after ServerSearch() should be 96 but", s.Weight)
-	}
-	if s.Status != false {
-		t.Error("s.Status after ServerSearch() should be false but", s.Status)
-	}
-	if len(s.PortList) != 2 {
-		t.Error("s.Port length after ServerSearch() should be 2 but", len(s.PortList))
-	}
-	p := s.PortList[0]
 
-	if p.Status != false {
-		t.Error("p.Status after ServerSearch() should be false but", p.Status)
-	}
-
-	if p.Weight != 99 {
-		t.Error("p.Weight after ServerSearch() should be 99 but", p.Weight)
-	}
-	if p.Template != "B2RL" {
-		t.Error("p.Template after ServerSearch() should be B2RL but", p.Template)
+	if !reflect.DeepEqual(server, &expectServer.Server) {
+		t.Errorf("server should be %v but %v", server, &expectServer.Server)
 	}
 
 }
@@ -156,59 +133,36 @@ func TestServerCreate(t *testing.T) {
 		if req.URL.Path != "/services/rest/V2.1/" {
 			t.Error("request URL should be /services/rest/V2.1/ but :", req.URL.Path)
 		}
-
 		if req.Method != "POST" {
 			t.Error("request method should be POST but: ", req.Method)
 		}
-
 		query := req.URL.Query()
-		if strings.Join(query["format"], "") != "json" {
-			t.Error("request QueryString should be format=json but :", query["json"])
-		}
 		if strings.Join(query["method"], "") != "slb.server.create" {
 			t.Error("request QueryString should be method=slb.server.create but :", query["method"])
 		}
-		if strings.Join(query["session_id"], "") != "FTNFPTD" {
-			t.Error("request QueryString should be session_id=FTNFPTD but :", query["method"])
-		}
 
-		body, _ := ioutil.ReadAll(req.Body)
-
-		var s Server
-
-		err := json.Unmarshal(body, &s)
+		var reqServer Server
+		decoder := json.NewDecoder(req.Body)
+		err := decoder.Decode(&reqServer)
 		if err != nil {
-			t.Error("request body should be decoded as json", string(body))
-		}
-		if s.Name != "8" {
-			t.Error("s.Name after should be 8 but", s.Name)
-		}
-		if s.Weight != 96 {
-			t.Error("s.Weight after should be 96 but", s.Weight)
-		}
-		if s.Status != false {
-			t.Error("s.Status after should be false but", s.Status)
-		}
-		if len(s.PortList) != 2 {
-			t.Error("s.Port length should be 2 but", len(s.PortList))
-		}
-		p := s.PortList[0]
-
-		if p.Status != false {
-			t.Error("p.Status should be false but", p.Status)
+			t.Error("request body should be decoded as json", err)
 		}
 
-		if p.Weight != 99 {
-			t.Error("p.Weight should be 99 but", p.Weight)
+		var expectServer struct {
+			Server Server `json:"server"`
 		}
-		if p.Template != "B2RL" {
-			t.Error("p.Template should be B2RL but", p.Template)
+		err = json.Unmarshal([]byte(testServerData), &expectServer)
+		if err != nil {
+			t.Error("testServerData should be decoded as json")
+		}
+
+		if !reflect.DeepEqual(reqServer, expectServer.Server) {
+			t.Errorf("reqServer should be %v but %v", reqServer, expectServer.Server)
 		}
 
 		respJSON := ""
 		res.Header()["Content-Type"] = []string{"application/json"}
 		fmt.Fprint(res, respJSON)
-
 	}))
 	defer ts.Close()
 
@@ -226,15 +180,15 @@ func TestServerCreate(t *testing.T) {
 	}
 	client.token = "FTNFPTD"
 
-	var jsonBody struct {
+	var server struct {
 		Server Server `json:"server"`
 	}
-	err = json.Unmarshal([]byte(testServerData), &jsonBody)
+	err = json.Unmarshal([]byte(testServerData), &server)
 	if err != nil {
 		t.Error("request body should be decoded as json")
 	}
 
-	err = client.ServerCreate(&jsonBody.Server)
+	err = client.ServerCreate(&server.Server)
 
 	if err != nil {
 		t.Fatalf("should not raise error: %v", err)
@@ -246,35 +200,25 @@ func TestServerDelete(t *testing.T) {
 		if req.URL.Path != "/services/rest/V2.1/" {
 			t.Error("request URL should be /services/rest/V2.1/ but :", req.URL.Path)
 		}
-
 		if req.Method != "POST" {
 			t.Error("request method should be POST but: ", req.Method)
 		}
-
 		query := req.URL.Query()
-		if strings.Join(query["format"], "") != "json" {
-			t.Error("request QueryString should be format=json but :", query["json"])
-		}
 		if strings.Join(query["method"], "") != "slb.server.delete" {
 			t.Error("request QueryString should be method=slb.server.delete but :", query["method"])
 		}
-		if strings.Join(query["session_id"], "") != "FTNFPTD" {
-			t.Error("request QueryString should be session_id=FTNFPTD but :", query["method"])
-		}
 
-		body, _ := ioutil.ReadAll(req.Body)
-
-		var h struct {
+		var host struct {
 			Host string `json:"Host"`
 		}
-
-		err := json.Unmarshal(body, &h)
+		decoder := json.NewDecoder(req.Body)
+		err := decoder.Decode(&host)
 		if err != nil {
-			t.Error("request body should be decoded as json", string(body))
+			t.Error("request body should be decoded as json", err)
 		}
 
-		if h.Host != "8X4" {
-			t.Error("request body should have 8X4 in the name column, but", h.Host)
+		if host.Host != "8X4" {
+			t.Error("request body should have 8X4 in the name column, but", host.Host)
 		}
 
 		respJSON := ""
@@ -294,17 +238,9 @@ func TestServerDelete(t *testing.T) {
 
 	client, err := NewClient(opts)
 	if err != nil {
-		t.Errorf("should not raise error: %v", err)
+		t.Fatalf("should not raise error: %v", err)
 	}
 	client.token = "FTNFPTD"
-
-	var jsonBody struct {
-		Server Server `json:"server"`
-	}
-	err = json.Unmarshal([]byte(testServerData), &jsonBody)
-	if err != nil {
-		t.Error("request body should be decoded as json")
-	}
 
 	err = client.ServerDelete("8X4")
 	if err != nil {
