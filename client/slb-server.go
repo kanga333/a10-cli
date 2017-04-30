@@ -10,6 +10,7 @@ const (
 	search = "slb.server.search"
 	create = "slb.server.create"
 	delete = "slb.server.delete"
+	update = "slb.server.update"
 )
 
 //Port represents slb.server.port object of A10.
@@ -141,6 +142,32 @@ func (c *Client) ServerDelete(h string) error {
 	resp, err := c.postJSON(url, body)
 	if err != nil {
 		log.Println("Error in server delete request.")
+		return err
+	}
+	defer resp.Body.Close()
+
+	return nil
+}
+
+// ServerUpdate is a function to slb.server.update to a10
+func (c *Client) ServerUpdate(s *Server) error {
+	log.Println("Start server update.")
+
+	url, err := c.CreateSessionURL(update)
+	if err != nil {
+		log.Println("Error in creating session url.")
+		return err
+	}
+
+	body, err := json.Marshal(s)
+	if err != nil {
+		log.Println("Error in creating server update request.")
+		return err
+	}
+
+	resp, err := c.postJSON(url, body)
+	if err != nil {
+		log.Println("Error in server update request.")
 		return err
 	}
 	defer resp.Body.Close()
