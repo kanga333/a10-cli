@@ -9,6 +9,7 @@ import (
 const (
 	search = "slb.server.search"
 	create = "slb.server.create"
+	delete = "slb.server.delete"
 )
 
 //Port represents slb.server.port object of A10.
@@ -109,6 +110,37 @@ func (c *Client) ServerCreate(s *Server) error {
 	resp, err := c.postJSON(url, body)
 	if err != nil {
 		log.Println("Error in server create request.")
+		return err
+	}
+	defer resp.Body.Close()
+
+	return nil
+}
+
+// ServerDelete is a function to slb.server.delete to a10
+func (c *Client) ServerDelete(h string) error {
+	log.Println("Start server delete.")
+
+	url, err := c.CreateSessionURL(delete)
+	if err != nil {
+		log.Println("Error in creating session url.")
+		return err
+	}
+
+	var input struct {
+		Host string `json:"host"`
+	}
+	input.Host = h
+
+	body, err := json.Marshal(&input)
+	if err != nil {
+		log.Println("Error in creating server create request.")
+		return err
+	}
+
+	resp, err := c.postJSON(url, body)
+	if err != nil {
+		log.Println("Error in server delete request.")
 		return err
 	}
 	defer resp.Body.Close()

@@ -240,3 +240,74 @@ func TestServerCreate(t *testing.T) {
 		t.Fatalf("should not raise error: %v", err)
 	}
 }
+
+func TestServerDelete(t *testing.T) {
+	ts := httptest.NewTLSServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		if req.URL.Path != "/services/rest/V2.1/" {
+			t.Error("request URL should be /services/rest/V2.1/ but :", req.URL.Path)
+		}
+
+		if req.Method != "POST" {
+			t.Error("request method should be POST but: ", req.Method)
+		}
+
+		query := req.URL.Query()
+		if strings.Join(query["format"], "") != "json" {
+			t.Error("request QueryString should be format=json but :", query["json"])
+		}
+		if strings.Join(query["method"], "") != "slb.server.delete" {
+			t.Error("request QueryString should be method=slb.server.delete but :", query["method"])
+		}
+		if strings.Join(query["session_id"], "") != "FTNFPTD" {
+			t.Error("request QueryString should be session_id=FTNFPTD but :", query["method"])
+		}
+
+		body, _ := ioutil.ReadAll(req.Body)
+
+		var h struct {
+			Host string `json:"Host"`
+		}
+
+		err := json.Unmarshal(body, &h)
+		if err != nil {
+			t.Error("request body should be decoded as json", string(body))
+		}
+
+		if h.Host != "8X4" {
+			t.Error("request body should have 8X4 in the name column, but", h.Host)
+		}
+
+		respJSON := ""
+		res.Header()["Content-Type"] = []string{"application/json"}
+		fmt.Fprint(res, respJSON)
+
+	}))
+	defer ts.Close()
+
+	u, _ := url.Parse(ts.URL)
+	opts := Opts{
+		Username: "admin",
+		Password: "passwd",
+		Target:   u.Host,
+		Insecure: true,
+	}
+
+	client, err := NewClient(opts)
+	if err != nil {
+		t.Errorf("should not raise error: %v", err)
+	}
+	client.token = "FTNFPTD"
+
+	var jsonBody struct {
+		Server Server `json:"server"`
+	}
+	err = json.Unmarshal([]byte(testServerData), &jsonBody)
+	if err != nil {
+		t.Error("request body should be decoded as json")
+	}
+
+	err = client.ServerDelete("8X4")
+	if err != nil {
+		t.Fatalf("should not raise error: %v", err)
+	}
+}
