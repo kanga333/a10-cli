@@ -180,6 +180,30 @@ func TestServerCreate(t *testing.T) {
 		if err != nil {
 			t.Error("request body should be decoded as json", string(body))
 		}
+		if s.Name != "8" {
+			t.Error("s.Name after should be 8 but", s.Name)
+		}
+		if s.Weight != 96 {
+			t.Error("s.Weight after should be 96 but", s.Weight)
+		}
+		if s.Status != false {
+			t.Error("s.Status after should be false but", s.Status)
+		}
+		if len(s.PortList) != 2 {
+			t.Error("s.Port length should be 2 but", len(s.PortList))
+		}
+		p := s.PortList[0]
+
+		if p.Status != false {
+			t.Error("p.Status should be false but", p.Status)
+		}
+
+		if p.Weight != 99 {
+			t.Error("p.Weight should be 99 but", p.Weight)
+		}
+		if p.Template != "B2RL" {
+			t.Error("p.Template should be B2RL but", p.Template)
+		}
 
 		respJSON := ""
 		res.Header()["Content-Type"] = []string{"application/json"}
@@ -202,13 +226,15 @@ func TestServerCreate(t *testing.T) {
 	}
 	client.token = "FTNFPTD"
 
-	var server Server
-	err = json.Unmarshal([]byte(testServerData), &server)
+	var jsonBody struct {
+		Server Server `json:"server"`
+	}
+	err = json.Unmarshal([]byte(testServerData), &jsonBody)
 	if err != nil {
 		t.Error("request body should be decoded as json")
 	}
 
-	err = client.ServerCreate(&server)
+	err = client.ServerCreate(&jsonBody.Server)
 
 	if err != nil {
 		t.Fatalf("should not raise error: %v", err)
