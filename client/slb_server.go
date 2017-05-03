@@ -17,7 +17,7 @@ const (
 type Port struct {
 	PortNum      int     `json:"port_num"`
 	Protocol     int     `json:"protocol"`
-	Status       NumBool `json:"user"`
+	Status       NumBool `json:"status"`
 	Weight       int     `json:"weight"`
 	NoSsl        NumBool `json:"no_ssl"`
 	ConnLimit    int     `json:"conn_limit"`

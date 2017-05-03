@@ -41,7 +41,7 @@ func CmdStatus(c *cli.Context) {
 	}
 	defer a10.Close()
 
-	s, err := a10.ServerSearch(conf.Host)
+	s, err := a10.ServerSearch(conf.Server.Host)
 	if err != nil {
 		fmt.Printf("Unexpected error: %v", err)
 		os.Exit(1)

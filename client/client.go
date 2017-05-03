@@ -28,11 +28,11 @@ type Client struct {
 
 // Opts is an option used to generate a10.client.Client
 type Opts struct {
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	Target   string `yaml:"target"`
-	Insecure bool   `yaml:"insecure"`
-	Proxy    string `yaml:"proxy"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Target   string `json:"target"`
+	Insecure bool   `json:"insecure"`
+	Proxy    string `json:"proxy"`
 }
 
 // NewClient returns new a10.client.Client

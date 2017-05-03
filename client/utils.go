@@ -21,6 +21,12 @@ func (a *NumBool) UnmarshalJSON(data []byte) error {
 	case "1":
 		*a = true
 		return nil
+	case "false":
+		*a = false
+		return nil
+	case "true":
+		*a = true
+		return nil
 	default:
 		return fmt.Errorf("Uncastable value: %v", asString)
 	}
