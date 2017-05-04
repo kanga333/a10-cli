@@ -29,7 +29,3 @@ func LoadConf(path string) (*Config, error) {
 
 	return &c, nil
 }
-
-func (c *Config) LoadServer() (*client.Server, error) {
-	return nil, nil
-}
