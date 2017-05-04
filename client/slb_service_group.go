@@ -142,3 +142,15 @@ func (c *Client) ServiceGroupSearch(n string) (*ServiceGroup, error) {
 
 	return &jsonBody.ServiceGroup, nil
 }
+
+//SGMemberSearch is a function to search for the specified member in ServiceGroup.
+func (c *Client) SGMemberSearch(sg *ServiceGroup, server string) *Member {
+	log.Println("Start SGmember search.")
+
+	for _, m := range sg.MemberList {
+		if m.Server == server {
+			return &m
+		}
+	}
+	return nil
+}

@@ -259,4 +259,9 @@ func TestServiceGroupSearch(t *testing.T) {
 		t.Errorf("reqServer should be %v but %v", expectServiceGroup.ServiceGroup, sg)
 	}
 
+	m := client.SGMemberSearch(sg, "BT2DN60F")
+	if m.Server != "BT2DN60F" {
+		t.Errorf("m.Server should be BT2DN60F but %v", m.Server)
+	}
+
 }
