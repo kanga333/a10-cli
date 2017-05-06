@@ -29,8 +29,9 @@ var (
 
 // Config is a structure that expresses the setting required by a10
 type Config struct {
-	A10    client.Opts   `json:"a10cli"`
-	Server client.Server `json:"server"`
+	A10           client.Opts              `json:"a10cli"`
+	Server        client.Server            `json:"server"`
+	ServiceGroups []client.SGNameAndMember `json:"service_groups"`
 }
 
 // LoadConf reads the yaml setting from the specified path

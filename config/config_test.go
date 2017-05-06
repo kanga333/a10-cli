@@ -55,6 +55,16 @@ server:
    stats_data: false
    health_monitor: (default)
    extended_stats: false
+service_groups:
+ -
+  name: VBX2842DH
+  member:
+   server: BT2DN60F
+   port: 34144
+   template: "B"
+   priority: 9
+   status: false
+   stats_data: false
 `
 
 func TestLoadConft(t *testing.T) {
@@ -96,4 +106,11 @@ func TestLoadConft(t *testing.T) {
 		t.Error("conf.Server.PortList[0].Status should be true but", conf.Server.PortList[0].Status)
 	}
 
+	if conf.ServiceGroups[0].Name != "VBX2842DH" {
+		t.Error("conf.ServiceGroups[0].Name should be VBX2842DH but", conf.ServiceGroups[0].Name)
+	}
+
+	if conf.ServiceGroups[0].Member.Server != "BT2DN60F" {
+		t.Error("conf.ServiceGroups[0].Member.Server should be BT2DN60F but", conf.ServiceGroups[0].Member.Server)
+	}
 }
