@@ -56,7 +56,7 @@ func CmdLeave(c *cli.Context) {
 	}
 	if s != nil {
 		fmt.Printf("Create %v.", conf.Server.Host)
-		err = a10.ServerCreate(&conf.Server)
+		err = a10.ServerDelete(&conf.Server.Host)
 		if err != nil {
 			fmt.Printf("Unexpected error: %v", err)
 			os.Exit(1)
