@@ -32,7 +32,7 @@ func CmdJoin(c *cli.Context) {
 		fmt.Printf("Unexpected error: %v", err)
 		os.Exit(1)
 	}
-	if s != nil {
+	if s.Host != "" {
 		fmt.Printf("Server %v is already exist.", conf.Server.Host)
 	} else {
 		fmt.Printf("Create %v.", conf.Server.Host)
