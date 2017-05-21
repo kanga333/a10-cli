@@ -72,6 +72,12 @@ var Commands = []cli.Command{
 		Action: command.CmdEnable,
 		Flags:  []cli.Flag{},
 	},
+	{
+		Name:   "export",
+		Usage:  "",
+		Action: command.CmdExport,
+		Flags:  []cli.Flag{},
+	},
 }
 
 func CommandNotFound(c *cli.Context, command string) {
