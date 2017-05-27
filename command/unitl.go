@@ -18,4 +18,5 @@ func newAuthorizedClientwithFromConfig(c *config.Config) (*client.Client, error)
 	if err != nil {
 		return nil, err
 	}
+	return a10, nil
 }
