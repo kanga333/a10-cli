@@ -2,6 +2,7 @@ package command
 
 import (
 	"html/template"
+	"log"
 	"os"
 
 	"fmt"
@@ -26,24 +27,24 @@ PortNum:	{{.PortNum}}({{.Status | boolToState}})
 func CmdStatus(c *cli.Context) {
 	conf, err := config.LoadConf(c.GlobalString("config"))
 	if err != nil {
-		fmt.Printf("Unexpected error: %v", err)
+		log.Printf("[ERR] failed to read configuration file: %s", err)
 		os.Exit(1)
 	}
 	a10, err := client.NewClient(conf.A10)
 	if err != nil {
-		fmt.Printf("Unexpected error: %v", err)
+		log.Printf("[ERR] failed to create client: %s", err)
 		os.Exit(1)
 	}
 	err = a10.Auth()
 	if err != nil {
-		fmt.Printf("Unexpected error: %v", err)
+		log.Printf("[ERR] failed on authentication: %s", err)
 		os.Exit(1)
 	}
 	defer a10.Close()
 
 	s, err := a10.ServerSearch(conf.Server.Host)
 	if err != nil {
-		fmt.Printf("Unexpected error: %v", err)
+		log.Printf("[ERR] failed to search the server: %s", err)
 		os.Exit(1)
 	}
 	printStatus(s)
@@ -54,7 +55,7 @@ func printStatus(s *client.Server) {
 		Funcs(template.FuncMap{"boolToState": boolToState}).
 		Parse(templ)
 	if err != nil {
-		fmt.Printf("Unexpected error: %v", err)
+		fmt.Printf("[ERR] failed to create template: %s", err)
 		os.Exit(1)
 	}
 	tmpl.Execute(os.Stdout, s)

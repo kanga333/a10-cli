@@ -28,6 +28,6 @@ func (a *NumBool) UnmarshalJSON(data []byte) error {
 		*a = true
 		return nil
 	default:
-		return fmt.Errorf("Uncastable value: %v", asString)
+		return fmt.Errorf("uncastable value: %s", asString)
 	}
 }

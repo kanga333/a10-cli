@@ -50,13 +50,11 @@ type Server struct {
 	PortList            []Port  `json:"port_list"`
 }
 
-// ServerSearch is a function to slb.server.search to a10
+// ServerSearch is a function to slb.server.search to a10.
 func (c *Client) ServerSearch(h string) (*Server, error) {
-	log.Println("Start server search.")
-
+	log.Printf("[INFO] start searching server: %s", h)
 	url, err := c.CreateSessionURL(search)
 	if err != nil {
-		log.Println("Error in creating session url.")
 		return nil, err
 	}
 
@@ -67,13 +65,11 @@ func (c *Client) ServerSearch(h string) (*Server, error) {
 
 	body, err := json.Marshal(input)
 	if err != nil {
-		log.Println("Error in creating serverSearch request.")
 		return nil, err
 	}
 
 	resp, err := c.postJSON(url, body)
 	if err != nil {
-		log.Println("Error in serverSearch request.")
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -82,11 +78,10 @@ func (c *Client) ServerSearch(h string) (*Server, error) {
 	}
 	err = json.NewDecoder(resp.Body).Decode(&jsonBody)
 	if err != nil {
-		log.Println("Error in parsing serverSearch request response.")
 		return nil, err
 	}
 	if &jsonBody == nil {
-		return nil, fmt.Errorf("Struct after JSON parsing is empty")
+		return nil, fmt.Errorf("struct after JSON parsing is empty")
 	}
 
 	return &jsonBody.Server, nil
@@ -94,23 +89,19 @@ func (c *Client) ServerSearch(h string) (*Server, error) {
 
 // ServerCreate is a function to slb.server.create to a10
 func (c *Client) ServerCreate(s *Server) error {
-	log.Println("Start server create.")
-
+	log.Printf("[INFO] start creating name: %s , host: %s", s.Name, s.Host)
 	url, err := c.CreateSessionURL(create)
 	if err != nil {
-		log.Println("Error in creating session url.")
 		return err
 	}
 
 	body, err := json.Marshal(s)
 	if err != nil {
-		log.Println("Error in creating server create request.")
 		return err
 	}
 
 	resp, err := c.postJSON(url, body)
 	if err != nil {
-		log.Println("Error in server create request.")
 		return err
 	}
 	defer resp.Body.Close()
@@ -120,11 +111,9 @@ func (c *Client) ServerCreate(s *Server) error {
 
 // ServerDelete is a function to slb.server.delete to a10
 func (c *Client) ServerDelete(h string) error {
-	log.Println("Start server delete.")
-
+	log.Printf("[INFO] start deleting server: %s", h)
 	url, err := c.CreateSessionURL(delete)
 	if err != nil {
-		log.Println("Error in creating session url.")
 		return err
 	}
 
@@ -135,13 +124,11 @@ func (c *Client) ServerDelete(h string) error {
 
 	body, err := json.Marshal(&input)
 	if err != nil {
-		log.Println("Error in creating server create request.")
 		return err
 	}
 
 	resp, err := c.postJSON(url, body)
 	if err != nil {
-		log.Println("Error in server delete request.")
 		return err
 	}
 	defer resp.Body.Close()
@@ -151,23 +138,19 @@ func (c *Client) ServerDelete(h string) error {
 
 // ServerUpdate is a function to slb.server.update to a10
 func (c *Client) ServerUpdate(s *Server) error {
-	log.Println("Start server update.")
-
+	log.Printf("[INFO] start updating server: %s , host: %s", s.Name, s.Host)
 	url, err := c.CreateSessionURL(update)
 	if err != nil {
-		log.Println("Error in creating session url.")
 		return err
 	}
 
 	body, err := json.Marshal(s)
 	if err != nil {
-		log.Println("Error in creating server update request.")
 		return err
 	}
 
 	resp, err := c.postJSON(url, body)
 	if err != nil {
-		log.Println("Error in server update request.")
 		return err
 	}
 	defer resp.Body.Close()

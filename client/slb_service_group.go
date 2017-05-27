@@ -51,23 +51,20 @@ type Member struct {
 
 //ServiceGroupMemberCreate is a function to slb.service_group.member.create to a10.
 func (c *Client) ServiceGroupMemberCreate(m *SGNameAndMember) error {
-	log.Println("Start member create.")
+	log.Printf("[INFO] start creating member: %s to sg: %s", m.Member.Server, m.Name)
 
 	url, err := c.CreateSessionURL(memberCreate)
 	if err != nil {
-		log.Println("Error in creating session url.")
 		return err
 	}
 
 	body, err := json.Marshal(m)
 	if err != nil {
-		log.Println("Error in creating server create request.")
 		return err
 	}
 
 	resp, err := c.postJSON(url, body)
 	if err != nil {
-		log.Println("Error in server create request.")
 		return err
 	}
 	defer resp.Body.Close()
@@ -77,23 +74,20 @@ func (c *Client) ServiceGroupMemberCreate(m *SGNameAndMember) error {
 
 //ServiceGroupMemberDelete is a function to slb.service_group.member.delete to a10.
 func (c *Client) ServiceGroupMemberDelete(m *SGNameAndMember) error {
-	log.Println("Start member delete.")
+	log.Printf("[INFO] start deleting member: %s in sg: %s", m.Member.Server, m.Name)
 
 	url, err := c.CreateSessionURL(memberDelete)
 	if err != nil {
-		log.Println("Error in creating session url.")
 		return err
 	}
 
 	body, err := json.Marshal(m)
 	if err != nil {
-		log.Println("Error in creating server delete request.")
 		return err
 	}
 
 	resp, err := c.postJSON(url, body)
 	if err != nil {
-		log.Println("Error in server create request.")
 		return err
 	}
 	defer resp.Body.Close()
@@ -103,11 +97,10 @@ func (c *Client) ServiceGroupMemberDelete(m *SGNameAndMember) error {
 
 //ServiceGroupSearch is a function to slb.service_group.search to a10.
 func (c *Client) ServiceGroupSearch(n string) (*ServiceGroup, error) {
-	log.Println("Start sg search.")
+	log.Printf("[INFO] start serching sg: %s", n)
 
 	url, err := c.CreateSessionURL(sgSearch)
 	if err != nil {
-		log.Println("Error in creating session url.")
 		return nil, err
 	}
 
@@ -118,26 +111,24 @@ func (c *Client) ServiceGroupSearch(n string) (*ServiceGroup, error) {
 
 	body, err := json.Marshal(name)
 	if err != nil {
-		log.Println("Error in creating server delete request.")
 		return nil, err
 	}
 
 	resp, err := c.postJSON(url, body)
 	if err != nil {
-		log.Println("Error in server create request.")
 		return nil, err
 	}
 	defer resp.Body.Close()
+
 	var jsonBody struct {
 		ServiceGroup ServiceGroup `json:"service_group"`
 	}
 	err = json.NewDecoder(resp.Body).Decode(&jsonBody)
 	if err != nil {
-		log.Println("Error in parsing serverSearch request response.")
 		return nil, err
 	}
 	if &jsonBody == nil {
-		return nil, fmt.Errorf("Struct after JSON parsing is empty")
+		return nil, fmt.Errorf("struct after JSON parsing is empty")
 	}
 
 	return &jsonBody.ServiceGroup, nil
@@ -145,7 +136,7 @@ func (c *Client) ServiceGroupSearch(n string) (*ServiceGroup, error) {
 
 //SGMemberSearch is a function to search for the specified member in ServiceGroup.
 func (c *Client) SGMemberSearch(sg *ServiceGroup, server string) *Member {
-	log.Println("Start SGmember search.")
+	log.Printf("[INFO] start serching member: %s in sg: %s", server, sg.Name)
 
 	for _, m := range sg.MemberList {
 		if m.Server == server {

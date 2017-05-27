@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -37,11 +39,12 @@ type Opts struct {
 
 // NewClient returns new a10.client.Client
 func NewClient(opts Opts) (*Client, error) {
+	log.Printf("[INFO] setting client to target %s", opts.Target)
 	baseURL := scheme + opts.Target + baseURI
 
 	url, err := url.Parse(baseURL)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "fail to parse base url: %s", baseURL)
 	}
 
 	client := &http.Client{}
@@ -49,14 +52,16 @@ func NewClient(opts Opts) (*Client, error) {
 	transport := &http.Transport{}
 	tlsConfig := &tls.Config{}
 	if opts.Insecure == true {
+		log.Printf("[INFO] setting client insecure true")
 		tlsConfig.InsecureSkipVerify = true
 	}
 	transport.TLSClientConfig = tlsConfig
 	if opts.Proxy != "" {
 		proxy, err := url.Parse(opts.Proxy)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrapf(err, "fail to parse proxy url: %s", opts.Proxy)
 		}
+		log.Printf("[INFO] setting client proxy %s", proxy)
 		transport.Proxy = http.ProxyURL(proxy)
 	}
 	client.Transport = transport
