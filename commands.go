@@ -10,28 +10,28 @@ import (
 
 var GlobalFlags = []cli.Flag{
 	cli.StringFlag{
-		EnvVar: "ENV_USER",
+		EnvVar: "A10_USER",
 		Name:   "user",
 		Value:  "",
-		Usage:  "",
+		Usage:  "authentication user",
 	},
 	cli.StringFlag{
-		EnvVar: "ENV_PASSWORD",
+		EnvVar: "A10_PASSWORD",
 		Name:   "password",
 		Value:  "",
-		Usage:  "",
+		Usage:  "authentication password",
 	},
 	cli.StringFlag{
-		EnvVar: "ENV_TARGET",
+		EnvVar: "A10_TARGET",
 		Name:   "target",
 		Value:  "",
-		Usage:  "",
+		Usage:  "slb hostname or ip",
 	},
 	cli.StringFlag{
-		EnvVar: "ENV_CONFIG",
+		EnvVar: "A10_CONFIG",
 		Name:   "config",
 		Value:  "",
-		Usage:  "",
+		Usage:  "location of setting file",
 	},
 }
 
@@ -52,7 +52,20 @@ var Commands = []cli.Command{
 		Name:   "status",
 		Usage:  "",
 		Action: command.CmdStatus,
-		Flags:  []cli.Flag{},
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				EnvVar: "",
+				Name:   "server",
+				Value:  "",
+				Usage:  "server name",
+			},
+			cli.StringSliceFlag{
+				EnvVar: "",
+				Name:   "service-group",
+				Value:  nil,
+				Usage:  "service group name that can be specified more than once",
+			},
+		},
 	},
 	{
 		Name:   "update",
@@ -73,10 +86,23 @@ var Commands = []cli.Command{
 		Flags:  []cli.Flag{},
 	},
 	{
-		Name:   "export",
+		Name:   "dump",
 		Usage:  "",
-		Action: command.CmdExport,
-		Flags:  []cli.Flag{},
+		Action: command.CmdDump,
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				EnvVar: "",
+				Name:   "server",
+				Value:  "",
+				Usage:  "server name",
+			},
+			cli.StringSliceFlag{
+				EnvVar: "",
+				Name:   "service-group",
+				Value:  nil,
+				Usage:  "service group name that can be specified more than once",
+			},
+		},
 	},
 }
 

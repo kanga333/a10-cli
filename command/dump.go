@@ -11,7 +11,7 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-func CmdExport(c *cli.Context) {
+func CmdDump(c *cli.Context) {
 	conf, err := config.LoadConf(c.GlobalString("config"))
 	if err != nil {
 		log.Printf("[ERR] failed to read configuration file: %s", err)

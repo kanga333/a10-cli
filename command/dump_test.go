@@ -2,6 +2,6 @@ package command
 
 import "testing"
 
-func TestCmdExport(t *testing.T) {
+func TestCmdDump(t *testing.T) {
 	// Write your code here
 }
