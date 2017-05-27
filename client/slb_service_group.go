@@ -41,12 +41,12 @@ type MinActiveMember struct {
 
 //Member represents slb.service_group.member member object of A10.
 type Member struct {
-	Server    string   `json:"server"`
-	Port      int      `json:"port"`
-	Template  *string  `json:"template,omitempty"`
-	Priority  *int     `json:"priority,omitempty"`
-	Status    *NumBool `json:"status,omitempty"`
-	StatsData *NumBool `json:"stats_data,omitempty"`
+	Server    string  `json:"server"`
+	Port      int     `json:"port"`
+	Template  string  `json:"template"`
+	Priority  int     `json:"priority"`
+	Status    NumBool `json:"status"`
+	StatsData NumBool `json:"stats_data"`
 }
 
 //ServiceGroupMemberCreate is a function to slb.service_group.member.create to a10.

@@ -14,7 +14,7 @@ func TestNewClient(t *testing.T) {
 		Password: "passwd",
 		Target:   "127.0.0.1",
 	}
-	client, err := NewClient(opts)
+	client, err := NewClient(&opts)
 	if err != nil {
 		t.Errorf("should not raise error: %v", err)
 	}
@@ -43,7 +43,7 @@ func TestProxy(t *testing.T) {
 		Proxy:    ts.URL,
 	}
 
-	client, err := NewClient(opts)
+	client, err := NewClient(&opts)
 	if err != nil {
 		t.Errorf("should not raise error: %v", err)
 	}

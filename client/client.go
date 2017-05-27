@@ -38,7 +38,7 @@ type Opts struct {
 }
 
 // NewClient returns new a10.client.Client
-func NewClient(opts Opts) (*Client, error) {
+func NewClient(opts *Opts) (*Client, error) {
 	log.Printf("[INFO] setting client to target %s", opts.Target)
 	baseURL := scheme + opts.Target + baseURI
 

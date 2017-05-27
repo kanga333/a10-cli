@@ -30,14 +30,10 @@ func CmdStatus(c *cli.Context) {
 		log.Printf("[ERR] failed to read configuration file: %s", err)
 		os.Exit(1)
 	}
-	a10, err := client.NewClient(conf.A10)
+
+	a10, err := newAuthorizedClientwithFromConfig(conf)
 	if err != nil {
-		log.Printf("[ERR] failed to create client: %s", err)
-		os.Exit(1)
-	}
-	err = a10.Auth()
-	if err != nil {
-		log.Printf("[ERR] failed on authentication: %s", err)
+		log.Printf("[ERR] failed to create authorized client: %s", err)
 		os.Exit(1)
 	}
 	defer a10.Close()
@@ -66,5 +62,4 @@ func boolToState(b client.NumBool) string {
 		return "active"
 	}
 	return "inactive"
-
 }

@@ -7,64 +7,44 @@ import (
 )
 
 const testConfig = `
-a10cli:
- username: admin
- password: password
- target: 127.0.0.1
- insecure: true
- proxy: ""
+a10ballancer:
+  username: admin
+  password: password
+  target: 127.0.0.1
+  insecure: true
+  proxy: ""
 server:
- name: "8"
- host: 8X4
- gslb_external_address: 106.184.78.162
- weight: 96
- health_monitor: 8X4D204D
- status: false
- conn_limit: 3795251
- conn_limit_log: false
- conn_resume: 160051
- stats_data: false
- extended_stats: false
- slow_start: false
- spoofing_cache: false
- template: 8X
- port_list:
-  -
-   port_num: 32777
-   protocol: 2
-   status: true
-   weight: 99
-   no_ssl: false
-   conn_limit: 2614761
-   conn_limit_log: false
-   conn_resume: 219590
-   cemplate: B2RL
-   stats_data: false
-   health_monitor: (default)
-   extended_stats: false
-  -
-   port_num: 1239
-   protocol: 2
-   status: false
-   weight: 40
-   no_ssl: false
-   conn_limit: 6620575
-   conn_limit_log: false
-   conn_resume: 70525
-   template: ""
-   stats_data: false
-   health_monitor: (default)
-   extended_stats: false
-service_groups:
- -
-  name: VBX2842DH
-  member:
-   server: BT2DN60F
-   port: 34144
-   template: "B"
-   priority: 9
-   status: false
-   stats_data: false
+  name: "8"
+  host: 8X4
+  gslb_external_address: 106.184.78.162
+  weight: 96
+  health_monitor: 8X4D204D
+  conn_limit: 3795251
+  conn_limit_log: false
+  conn_resume: 160051
+  stats_data: false
+  extended_stats: false
+  slow_start: false
+  spoofing_cache: false
+  template: 8X
+  port_list:
+    32777:
+      protocol: 2
+      weight: 99
+      no_ssl: true
+      conn_limit: 2614761
+      conn_limit_log: false
+      conn_resume: 219590
+      template: B2RL
+      stats_data: false
+      health_monitor: (default)
+      extended_stats: false
+      sg_name: VBX2842DH
+      sg_template: "B"
+      sg_priority: 9
+      ag_stats_data: false
+    1239:
+      sg_name: 3
 `
 
 func TestLoadConft(t *testing.T) {
@@ -94,23 +74,19 @@ func TestLoadConft(t *testing.T) {
 		t.Error("conf.Server.Name should be 8 but", conf.Server)
 	}
 
-	if conf.Server.Weight != 96 {
-		t.Error("conf.Server.Weight should be 96 but", conf.Server.Weight)
+	if *conf.Server.Weight != 96 {
+		t.Error("conf.Server.Weight should be 96 but", *conf.Server.Weight)
 	}
 
 	if len(conf.Server.PortList) != 2 {
 		t.Error("port list should be 2 but", len(conf.Server.PortList))
 	}
 
-	if conf.Server.PortList[0].Status != true {
-		t.Error("conf.Server.PortList[0].Status should be true but", conf.Server.PortList[0].Status)
+	if *conf.Server.PortList[32777].NoSsl != true {
+		t.Error("*conf.Server.PortList[32777].NoSsl should be true but", *conf.Server.PortList[32777].NoSsl)
 	}
 
-	if conf.ServiceGroups[0].Name != "VBX2842DH" {
-		t.Error("conf.ServiceGroups[0].Name should be VBX2842DH but", conf.ServiceGroups[0].Name)
-	}
-
-	if conf.ServiceGroups[0].Member.Server != "BT2DN60F" {
-		t.Error("conf.ServiceGroups[0].Member.Server should be BT2DN60F but", conf.ServiceGroups[0].Member.Server)
+	if conf.Server.PortList[32777].SGName != "VBX2842DH" {
+		t.Error("conf.Server.PortList[32777].SGName should be VBX2842DH but", conf.Server.PortList[32777].SGName)
 	}
 }

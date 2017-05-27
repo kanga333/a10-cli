@@ -60,7 +60,7 @@ func TestAuth(t *testing.T) {
 		Insecure: true,
 	}
 
-	client, err := NewClient(opts)
+	client, err := NewClient(&opts)
 	if err != nil {
 		t.Errorf("should not raise error: %v", err)
 	}
@@ -108,7 +108,7 @@ func TestClose(t *testing.T) {
 		Insecure: true,
 	}
 
-	client, err := NewClient(opts)
+	client, err := NewClient(&opts)
 	if err != nil {
 		t.Errorf("should not raise error: %v", err)
 	}

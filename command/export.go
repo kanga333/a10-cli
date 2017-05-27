@@ -2,10 +2,10 @@ package command
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/ghodss/yaml"
-	"github.com/kanga333/a10-cli/client"
 	"github.com/kanga333/a10-cli/config"
 
 	"github.com/codegangsta/cli"
@@ -14,22 +14,24 @@ import (
 func CmdExport(c *cli.Context) {
 	conf, err := config.LoadConf(c.GlobalString("config"))
 	if err != nil {
-		fmt.Printf("Unexpected error: %v", err)
+		log.Printf("[ERR] failed to read configuration file: %s", err)
 		os.Exit(1)
 	}
-	a10, err := client.NewClient(conf.A10)
+
+	a10, err := newAuthorizedClientwithFromConfig(conf)
 	if err != nil {
-		fmt.Printf("Unexpected error: %v", err)
-		os.Exit(1)
-	}
-	err = a10.Auth()
-	if err != nil {
-		fmt.Printf("Unexpected error: %v", err)
+		log.Printf("[ERR] failed to create authorized client: %s", err)
 		os.Exit(1)
 	}
 	defer a10.Close()
 
-	s, err := a10.ServerSearch(conf.Server.Host)
+	server, err := conf.GetServer()
+	if err != nil {
+		log.Printf("[ERR] failed to create server from config: %s", err)
+		os.Exit(1)
+	}
+
+	s, err := a10.ServerSearch(server.Name)
 	if err != nil {
 		fmt.Printf("Unexpected error: %v", err)
 		os.Exit(1)
@@ -37,7 +39,12 @@ func CmdExport(c *cli.Context) {
 	b, err := yaml.Marshal(s)
 	println(string(b))
 
-	for _, v := range conf.ServiceGroups {
+	sgs, err := conf.GetSGNameAndMembers()
+	if err != nil {
+		log.Printf("[ERR] failed to create service groups from config: %s", err)
+		os.Exit(1)
+	}
+	for _, v := range sgs {
 		sg, err := a10.ServiceGroupSearch(v.Name)
 		if err != nil {
 			fmt.Printf("Unexpected error: %v", err)

@@ -102,7 +102,7 @@ func TestServerSearch(t *testing.T) {
 		Insecure: true,
 	}
 
-	client, err := NewClient(opts)
+	client, err := NewClient(&opts)
 	if err != nil {
 		t.Errorf("should not raise error: %v", err)
 	}
@@ -174,7 +174,7 @@ func TestServerCreate(t *testing.T) {
 		Insecure: true,
 	}
 
-	client, err := NewClient(opts)
+	client, err := NewClient(&opts)
 	if err != nil {
 		t.Errorf("should not raise error: %v", err)
 	}
@@ -236,7 +236,7 @@ func TestServerDelete(t *testing.T) {
 		Insecure: true,
 	}
 
-	client, err := NewClient(opts)
+	client, err := NewClient(&opts)
 	if err != nil {
 		t.Fatalf("should not raise error: %v", err)
 	}
@@ -294,7 +294,7 @@ func TestServerUpdate(t *testing.T) {
 		Insecure: true,
 	}
 
-	client, err := NewClient(opts)
+	client, err := NewClient(&opts)
 	if err != nil {
 		t.Errorf("should not raise error: %v", err)
 	}

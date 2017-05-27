@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/kanga333/a10-cli/client"
 	"github.com/kanga333/a10-cli/config"
 )
 
@@ -16,19 +15,21 @@ func CmdLeave(c *cli.Context) {
 		log.Printf("[ERR] failed to read configuration file: %s", err)
 		os.Exit(1)
 	}
-	a10, err := client.NewClient(conf.A10)
+
+	a10, err := newAuthorizedClientwithFromConfig(conf)
 	if err != nil {
-		log.Printf("[ERR] failed to create client: %s", err)
-		os.Exit(1)
-	}
-	err = a10.Auth()
-	if err != nil {
-		log.Printf("[ERR] failed on authentication: %s", err)
+		log.Printf("[ERR] failed to create authorized client: %s", err)
 		os.Exit(1)
 	}
 	defer a10.Close()
 
-	for _, v := range conf.ServiceGroups {
+	sgs, err := conf.GetSGNameAndMembers()
+	if err != nil {
+		log.Printf("[ERR] failed to create service groups from config: %s", err)
+		os.Exit(1)
+	}
+
+	for _, v := range sgs {
 		sg, err := a10.ServiceGroupSearch(v.Name)
 		if err != nil {
 			log.Printf("[ERR] failed to search service group: %s", err)
@@ -50,20 +51,26 @@ func CmdLeave(c *cli.Context) {
 		}
 	}
 
-	s, err := a10.ServerSearch(conf.Server.Host)
+	server, err := conf.GetServer()
+	if err != nil {
+		log.Printf("[ERR] failed to create server from config: %s", err)
+		os.Exit(1)
+	}
+
+	s, err := a10.ServerSearch(server.Host)
 	if err != nil {
 		log.Printf("[ERR] failed to search the server: %s", err)
 		os.Exit(1)
 	}
 	if s != nil {
-		fmt.Printf("Create %v.", conf.Server.Host)
-		err = a10.ServerDelete(conf.Server.Host)
+		fmt.Printf("Create %v.", server.Host)
+		err = a10.ServerDelete(server.Host)
 		if err != nil {
 			log.Printf("[ERR] failed to delete server: %s", err)
 			os.Exit(1)
 		}
 	} else {
-		log.Printf("[INFO] server: %s does not already exist", conf.Server.Host)
+		log.Printf("[INFO] server: %s does not already exist", server.Host)
 	}
 
 }
