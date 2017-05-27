@@ -76,7 +76,7 @@ func NewClient(opts *Opts) (*Client, error) {
 
 func (c *Client) postJSON(path string, body []byte) (*http.Response, error) {
 	bodyReader := bytes.NewReader(body)
-	log.Printf("Send post request to address %v", path)
+	log.Printf("[INFO] send post request to address %v", path)
 	resp, err := c.httpClient.Post(path, "application/json", bodyReader)
 	if err != nil {
 		return nil, err
