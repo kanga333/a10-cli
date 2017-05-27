@@ -22,7 +22,7 @@ func CmdJoin(c *cli.Context) {
 	}
 	defer a10.Close()
 
-	server, err := conf.GetServer()
+	server, err := conf.GenerateServer()
 	if err != nil {
 		log.Printf("[ERR] failed to create server from config: %s", err)
 		os.Exit(1)
@@ -43,7 +43,7 @@ func CmdJoin(c *cli.Context) {
 		}
 	}
 
-	sgs, err := conf.GetSGNameAndMembers()
+	sgs, err := conf.GenerateSGNameAndMembers()
 	if err != nil {
 		log.Printf("[ERR] failed to create service groups from config: %s", err)
 		os.Exit(1)

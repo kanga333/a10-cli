@@ -25,7 +25,7 @@ func CmdExport(c *cli.Context) {
 	}
 	defer a10.Close()
 
-	server, err := conf.GetServer()
+	server, err := conf.GenerateServer()
 	if err != nil {
 		log.Printf("[ERR] failed to create server from config: %s", err)
 		os.Exit(1)
@@ -39,7 +39,7 @@ func CmdExport(c *cli.Context) {
 	b, err := yaml.Marshal(s)
 	println(string(b))
 
-	sgs, err := conf.GetSGNameAndMembers()
+	sgs, err := conf.GenerateSGNameAndMembers()
 	if err != nil {
 		log.Printf("[ERR] failed to create service groups from config: %s", err)
 		os.Exit(1)

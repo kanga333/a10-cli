@@ -6,7 +6,7 @@ import (
 )
 
 func newAuthorizedClientwithFromConfig(c *config.Config) (*client.Client, error) {
-	ops, err := c.GetCliOpts()
+	ops, err := c.GenerateOpts()
 	if err != nil {
 		return nil, err
 	}

@@ -105,7 +105,7 @@ func LoadConf(path string) (*Config, error) {
 	return &c, nil
 }
 
-func (c *Config) GetCliOpts() (*client.Opts, error) {
+func (c *Config) GenerateOpts() (*client.Opts, error) {
 	if c.A10.Username == "" {
 		return nil, validFail("username", c.A10.Username)
 	}
@@ -115,7 +115,7 @@ func (c *Config) GetCliOpts() (*client.Opts, error) {
 	return &c.A10, nil
 }
 
-func (c *Config) GetServer() (*client.Server, error) {
+func (c *Config) GenerateServer() (*client.Server, error) {
 	if c.Server.Name == "" {
 		return nil, validFail("name", c.Server.Name)
 	}
@@ -158,7 +158,7 @@ func (c *Config) GetServer() (*client.Server, error) {
 	return &server, nil
 }
 
-func (c *Config) GetSGNameAndMembers() ([]client.SGNameAndMember, error) {
+func (c *Config) GenerateSGNameAndMembers() ([]client.SGNameAndMember, error) {
 	if c.Server.Name == "" {
 		return nil, validFail("name", c.Server.Name)
 	}
@@ -180,7 +180,6 @@ func (c *Config) GetSGNameAndMembers() ([]client.SGNameAndMember, error) {
 		copyNumBoolConf(&sgm.Member.Status, conf.SGStatsData)
 
 		sgms = append(sgms, sgm)
-
 	}
 
 	return sgms, nil
