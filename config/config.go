@@ -55,6 +55,7 @@ type Config struct {
 	Server ServerConfig `json:"server"`
 }
 
+// ServerConfig represents the setting of the server belonging to a10.
 type ServerConfig struct {
 	Name                string             `json:"name"`
 	Host                string             `json:"host"`
@@ -72,6 +73,7 @@ type ServerConfig struct {
 	PortList            map[int]PortConfig `json:"port_list"`
 }
 
+// PortConfig represents the setting of the service group members belonging to a10.
 type PortConfig struct {
 	Protocol      *int    `json:"protocol"`
 	Weight        *int    `json:"weight"`
@@ -89,7 +91,7 @@ type PortConfig struct {
 	SGStatsData   *bool   `json:"ag_stats_data"`
 }
 
-// LoadConf reads the yaml setting from the specified path
+// LoadConf reads the yaml setting from the specified path.
 func LoadConf(path string) (*Config, error) {
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -105,6 +107,7 @@ func LoadConf(path string) (*Config, error) {
 	return &c, nil
 }
 
+// GenerateOpts genetates client.Opts from config struct.
 func (c *Config) GenerateOpts() (*client.Opts, error) {
 	if c.A10.Username == "" {
 		return nil, validFail("username", c.A10.Username)
@@ -115,6 +118,7 @@ func (c *Config) GenerateOpts() (*client.Opts, error) {
 	return &c.A10, nil
 }
 
+// GenerateServer genetates a10 server setting from config struct.
 func (c *Config) GenerateServer() (*client.Server, error) {
 	if c.Server.Name == "" {
 		return nil, validFail("name", c.Server.Name)
@@ -158,6 +162,8 @@ func (c *Config) GenerateServer() (*client.Server, error) {
 	return &server, nil
 }
 
+// GenerateSGNameAndMembers genetates a10 service gtoup member setting
+// from config struct.
 func (c *Config) GenerateSGNameAndMembers() ([]client.SGNameAndMember, error) {
 	if c.Server.Name == "" {
 		return nil, validFail("name", c.Server.Name)

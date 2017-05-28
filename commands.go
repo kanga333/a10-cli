@@ -8,6 +8,7 @@ import (
 	"github.com/kanga333/a10-cli/command"
 )
 
+// GlobalFlags is a flag used for the entire a10-cli.
 var GlobalFlags = []cli.Flag{
 	cli.StringFlag{
 		EnvVar: "A10_USER",
@@ -35,6 +36,7 @@ var GlobalFlags = []cli.Flag{
 	},
 }
 
+// Commands stores information on subcommands used with a10-cli.
 var Commands = []cli.Command{
 	{
 		Name:   "join",
@@ -106,6 +108,7 @@ var Commands = []cli.Command{
 	},
 }
 
+// CommandNotFound displays an error when calling an unregistered subcommand.
 func CommandNotFound(c *cli.Context, command string) {
 	fmt.Fprintf(os.Stderr, "%s: '%s' is not a %s command. See '%s --help'.", c.App.Name, command, c.App.Name, c.App.Name)
 	os.Exit(2)
