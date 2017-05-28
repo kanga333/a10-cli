@@ -12,27 +12,27 @@ import (
 var GlobalFlags = []cli.Flag{
 	cli.StringFlag{
 		EnvVar: "A10_USER",
-		Name:   "user",
+		Name:   "username,u",
 		Value:  "",
-		Usage:  "authentication user",
+		Usage:  "Authentication user",
 	},
 	cli.StringFlag{
 		EnvVar: "A10_PASSWORD",
-		Name:   "password",
+		Name:   "password,p",
 		Value:  "",
-		Usage:  "authentication password",
+		Usage:  "Authentication password",
 	},
 	cli.StringFlag{
 		EnvVar: "A10_TARGET",
-		Name:   "target",
+		Name:   "target,t",
 		Value:  "",
-		Usage:  "slb hostname or ip",
+		Usage:  "Slb hostname or ip",
 	},
 	cli.StringFlag{
 		EnvVar: "A10_CONFIG",
-		Name:   "config",
+		Name:   "config,c",
 		Value:  "",
-		Usage:  "location of setting file",
+		Usage:  "Location of config file",
 	},
 }
 
@@ -40,69 +40,70 @@ var GlobalFlags = []cli.Flag{
 var Commands = []cli.Command{
 	{
 		Name:   "join",
-		Usage:  "",
+		Usage:  "Create a server in a10-slb and register the port in the specified service group",
 		Action: command.CmdJoin,
 		Flags:  []cli.Flag{},
 	},
 	{
 		Name:   "leave",
-		Usage:  "",
+		Usage:  "Delete the port registration from the service group and delete the server information from a10-slb",
 		Action: command.CmdLeave,
 		Flags:  []cli.Flag{},
 	},
 	{
 		Name:   "status",
-		Usage:  "",
+		Usage:  "Print the status of the server registered in a10-slb",
 		Action: command.CmdStatus,
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				EnvVar: "",
 				Name:   "server",
 				Value:  "",
-				Usage:  "server name",
-			},
-			cli.StringSliceFlag{
-				EnvVar: "",
-				Name:   "service-group",
-				Value:  nil,
-				Usage:  "service group name that can be specified more than once",
+				Usage:  "Server name to print status",
 			},
 		},
 	},
 	{
 		Name:   "update",
-		Usage:  "",
+		Usage:  "Update server setting to specified flag value",
 		Action: command.CmdUpdate,
-		Flags:  []cli.Flag{},
+		Flags: []cli.Flag{
+			cli.IntFlag{
+				EnvVar: "",
+				Name:   "weight,w",
+				Value:  1,
+				Usage:  "Server weight",
+			},
+		},
 	},
 	{
 		Name:   "disable",
-		Usage:  "",
+		Usage:  "Disable load balancing status to server",
 		Action: command.CmdDisable,
 		Flags:  []cli.Flag{},
 	},
 	{
 		Name:   "enable",
-		Usage:  "",
+		Usage:  "Enable load balancing status to server",
 		Action: command.CmdEnable,
 		Flags:  []cli.Flag{},
 	},
 	{
 		Name:   "dump",
-		Usage:  "",
+		Usage:  "Dump the status of the specified server to JSON",
 		Action: command.CmdDump,
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				EnvVar: "",
 				Name:   "server",
 				Value:  "",
-				Usage:  "server name",
+				Usage:  "Server name to dump",
 			},
 			cli.StringSliceFlag{
 				EnvVar: "",
 				Name:   "service-group",
 				Value:  nil,
-				Usage:  "service group name that can be specified more than once",
+				Usage:  "Service group name to dump (can be set more than once)",
 			},
 		},
 	},
