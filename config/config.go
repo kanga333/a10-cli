@@ -196,6 +196,11 @@ func (c *Config) GetServerName() string {
 	return c.Server.Name
 }
 
+// GetServerHost gets server host in config.
+func (c *Config) GetServerHost() string {
+	return c.Server.Host
+}
+
 // GetServiceGroupName gets service group name in config.
 func (c *Config) GetServiceGroupName() []string {
 	var sgNames []string

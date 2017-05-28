@@ -26,20 +26,20 @@ PortNum:	{{.PortNum}}({{.Status | boolToState}})
 func CmdStatus(c *cli.Context) {
 	conf, err := config.LoadConf(c.GlobalString("config"))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to read configuration file: %s", err)
+		fmt.Fprintf(os.Stderr, "failed to read configuration file: %s\n", err)
 		os.Exit(1)
 	}
 
 	a10, err := newAuthorizedClientwithFromConfig(conf)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to create authorized client: %s", err)
+		fmt.Fprintf(os.Stderr, "failed to create authorized client: %s\n", err)
 		os.Exit(1)
 	}
 	defer a10.Close()
 
 	s, err := a10.ServerSearch(conf.Server.Host)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to search the server: %s", err)
+		fmt.Fprintf(os.Stderr, "failed to search the server: %s\n", err)
 		os.Exit(1)
 	}
 	printStatus(s)
@@ -50,7 +50,7 @@ func printStatus(s *client.Server) {
 		Funcs(template.FuncMap{"boolToState": boolToState}).
 		Parse(templ)
 	if err != nil {
-		fmt.Printf("[ERR] failed to create template: %s", err)
+		fmt.Fprintf(os.Stderr, "failed to create template: %s\n", err)
 		os.Exit(1)
 	}
 	tmpl.Execute(os.Stdout, s)

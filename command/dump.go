@@ -14,13 +14,13 @@ import (
 func CmdDump(c *cli.Context) {
 	conf, err := config.LoadConf(c.GlobalString("config"))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to read configuration file: %s", err)
+		fmt.Fprintf(os.Stderr, "failed to read configuration file: %s\n", err)
 		os.Exit(1)
 	}
 
 	a10, err := newAuthorizedClientwithFromConfig(conf)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to create authorized client: %s", err)
+		fmt.Fprintf(os.Stderr, "failed to create authorized client: %s\n", err)
 		os.Exit(1)
 	}
 	defer a10.Close()
@@ -41,7 +41,7 @@ func CmdDump(c *cli.Context) {
 
 	server, err := a10.ServerSearchByName(dumpServerName)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to server search: %s", err)
+		fmt.Fprintf(os.Stderr, "failed to server search: %s\n", err)
 		os.Exit(1)
 	}
 
@@ -49,16 +49,16 @@ func CmdDump(c *cli.Context) {
 	for _, sgName := range dumpSGNames {
 		sg, err := a10.ServiceGroupSearch(sgName)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "failed to service group search: %s", err)
+			fmt.Fprintf(os.Stderr, "failed to service group search: %s\n", err)
 			os.Exit(1)
 		}
 		if sg == nil {
-			fmt.Fprintf(os.Stderr, "service group :%s is not found", sgName)
+			fmt.Fprintf(os.Stderr, "service group :%s is not found\n", sgName)
 			os.Exit(1)
 		}
 		m := a10.SGMemberSearch(sg, dumpServerName)
 		if m == nil {
-			fmt.Fprintf(os.Stderr, "server %s is not member inservice group :%s", dumpServerName, sgName)
+			fmt.Fprintf(os.Stderr, "server %s is not member inservice group :%s\n", dumpServerName, sgName)
 			os.Exit(1)
 		}
 		var sgm = client.SGNameAndMember{
@@ -70,14 +70,14 @@ func CmdDump(c *cli.Context) {
 
 	byteServer, err := json.Marshal(server)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "fail to server marshal :%s", err)
+		fmt.Fprintf(os.Stderr, "fail to server marshal :%s\n", err)
 		os.Exit(1)
 	}
 	fmt.Println(string(byteServer))
 	for _, sgm := range SGMembers {
 		byteSGM, err := json.Marshal(sgm)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "fail to server marshal :%s", err)
+			fmt.Fprintf(os.Stderr, "fail to server marshal :%s\n", err)
 			os.Exit(1)
 		}
 		fmt.Println(string(byteSGM))
