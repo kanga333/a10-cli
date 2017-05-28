@@ -2,7 +2,6 @@ package command
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/codegangsta/cli"
@@ -34,9 +33,7 @@ func CmdJoin(c *cli.Context) {
 		fmt.Fprintf(os.Stderr, "failed to search the server: %s", err)
 		os.Exit(1)
 	}
-	if s.Host != "" {
-		log.Printf("[INFO] server: %s is already exist", s.Host)
-	} else {
+	if s.Host == "" {
 		err = a10.ServerCreate(server)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed to create server: %s", err)
@@ -60,9 +57,7 @@ func CmdJoin(c *cli.Context) {
 			os.Exit(1)
 		}
 		m := a10.SGMemberSearch(sg, v.Member.Server)
-		if m != nil {
-			log.Printf("[INFO] server: %s is already exist in sg: %s", s.Host, sg.Name)
-		} else {
+		if m == nil {
 			err = a10.ServiceGroupMemberCreate(&v)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "failed to service group create: %s", err)

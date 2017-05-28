@@ -2,7 +2,6 @@ package command
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/codegangsta/cli"
@@ -36,7 +35,6 @@ func CmdLeave(c *cli.Context) {
 			os.Exit(1)
 		}
 		if sg == nil {
-			log.Printf("[INFO] service group: %v is not found", v.Name)
 			break
 		}
 		m := a10.SGMemberSearch(sg, v.Member.Server)
@@ -46,8 +44,6 @@ func CmdLeave(c *cli.Context) {
 				fmt.Fprintf(os.Stderr, "failed to delete service group member: %s", err)
 			}
 
-		} else {
-			log.Printf("[INFO] server: %s does not already exist in s: %s", v.Member.Server, v.Name)
 		}
 	}
 
@@ -69,8 +65,6 @@ func CmdLeave(c *cli.Context) {
 			fmt.Fprintf(os.Stderr, "failed to delete server: %s", err)
 			os.Exit(1)
 		}
-	} else {
-		log.Printf("[INFO] server: %s does not already exist", server.Host)
 	}
 
 }

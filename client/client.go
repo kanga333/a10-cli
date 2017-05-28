@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"crypto/tls"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 
 	"github.com/pkg/errors"
 )
@@ -24,6 +26,7 @@ type Client struct {
 	password string
 
 	httpClient *http.Client
+	logger     *log.Logger
 
 	token string
 }
@@ -34,12 +37,12 @@ type Opts struct {
 	Password string `json:"password"`
 	Target   string `json:"target"`
 	Insecure bool   `json:"insecure"`
+	Logging  bool   `json:"logging"`
 	Proxy    string `json:"proxy"`
 }
 
 // NewClient returns new a10.client.Client
 func NewClient(opts *Opts) (*Client, error) {
-	log.Printf("[INFO] setting client to target %s", opts.Target)
 	baseURL := scheme + opts.Target + baseURI
 
 	url, err := url.Parse(baseURL)
@@ -52,7 +55,6 @@ func NewClient(opts *Opts) (*Client, error) {
 	transport := &http.Transport{}
 	tlsConfig := &tls.Config{}
 	if opts.Insecure == true {
-		log.Printf("[INFO] setting client insecure true")
 		tlsConfig.InsecureSkipVerify = true
 	}
 	transport.TLSClientConfig = tlsConfig
@@ -61,22 +63,29 @@ func NewClient(opts *Opts) (*Client, error) {
 		if err != nil {
 			return nil, errors.Wrapf(err, "fail to parse proxy url: %s", opts.Proxy)
 		}
-		log.Printf("[INFO] setting client proxy %s", proxy)
 		transport.Proxy = http.ProxyURL(proxy)
 	}
 	client.Transport = transport
+
+	var logger *log.Logger
+	if opts.Logging {
+		logger = log.New(os.Stderr, "", log.LstdFlags)
+	} else {
+		logger = log.New(ioutil.Discard, "", log.LstdFlags)
+	}
 
 	return &Client{
 		baseURL:    url,
 		username:   opts.Username,
 		password:   opts.Password,
 		httpClient: client,
+		logger:     logger,
 	}, nil
 }
 
 func (c *Client) postJSON(path string, body []byte) (*http.Response, error) {
 	bodyReader := bytes.NewReader(body)
-	log.Printf("[INFO] send post request to address %v", path)
+	c.logger.Printf("[INFO] send post request to address %v", path)
 	resp, err := c.httpClient.Post(path, "application/json", bodyReader)
 	if err != nil {
 		return nil, err

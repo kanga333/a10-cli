@@ -1,9 +1,6 @@
 package client
 
-import (
-	"encoding/json"
-	"log"
-)
+import "encoding/json"
 
 const (
 	auth  = "authenticate"
@@ -21,10 +18,10 @@ type authOutput struct {
 
 // Auth is a function to authenticate to a10.
 func (c *Client) Auth() error {
-	log.Printf("[INFO] start authenticate by user: %s", c.username)
+	c.logger.Printf("[INFO] start authenticate by user: %s", c.username)
 	// If a value is set in token, it is already authenticated, so close the session first.
 	if c.token != "" {
-		log.Println("[INFO] reauthentication as authenticated")
+		c.logger.Println("[INFO] reauthentication as authenticated")
 		c.Close()
 	}
 
@@ -58,9 +55,9 @@ func (c *Client) Auth() error {
 
 // Close is a function to session.close to a10
 func (c *Client) Close() error {
-	log.Printf("[INFO] close the session with session_id : %s", c.token)
+	c.logger.Printf("[INFO] close the session with session_id : %s", c.token)
 	if c.token == "" {
-		log.Println("[INFO] session already closed")
+		c.logger.Println("[INFO] session already closed")
 		return nil
 	}
 

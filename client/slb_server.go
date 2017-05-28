@@ -3,7 +3,6 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
 const (
@@ -52,7 +51,7 @@ type Server struct {
 
 // ServerSearch is a function to slb.server.search to a10.
 func (c *Client) ServerSearch(h string) (*Server, error) {
-	log.Printf("[INFO] start searching server: %s", h)
+	c.logger.Printf("[INFO] start searching server: %s", h)
 	url, err := c.CreateSessionURL(search)
 	if err != nil {
 		return nil, err
@@ -87,9 +86,46 @@ func (c *Client) ServerSearch(h string) (*Server, error) {
 	return &jsonBody.Server, nil
 }
 
+// ServerSearchByName is a function to slb.server.search to a10.
+func (c *Client) ServerSearchByName(n string) (*Server, error) {
+	c.logger.Printf("[INFO] start searching server by name: %s", n)
+	url, err := c.CreateSessionURL(search)
+	if err != nil {
+		return nil, err
+	}
+
+	var input struct {
+		Name string `json:"name"`
+	}
+	input.Name = n
+
+	body, err := json.Marshal(input)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.postJSON(url, body)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	var jsonBody struct {
+		Server Server `json:"server"`
+	}
+	err = json.NewDecoder(resp.Body).Decode(&jsonBody)
+	if err != nil {
+		return nil, err
+	}
+	if &jsonBody == nil {
+		return nil, fmt.Errorf("struct after JSON parsing is empty")
+	}
+
+	return &jsonBody.Server, nil
+}
+
 // ServerCreate is a function to slb.server.create to a10
 func (c *Client) ServerCreate(s *Server) error {
-	log.Printf("[INFO] start creating name: %s , host: %s", s.Name, s.Host)
+	c.logger.Printf("[INFO] start creating name: %s , host: %s", s.Name, s.Host)
 	url, err := c.CreateSessionURL(create)
 	if err != nil {
 		return err
@@ -111,7 +147,7 @@ func (c *Client) ServerCreate(s *Server) error {
 
 // ServerDelete is a function to slb.server.delete to a10
 func (c *Client) ServerDelete(h string) error {
-	log.Printf("[INFO] start deleting server: %s", h)
+	c.logger.Printf("[INFO] start deleting server: %s", h)
 	url, err := c.CreateSessionURL(delete)
 	if err != nil {
 		return err
@@ -138,7 +174,7 @@ func (c *Client) ServerDelete(h string) error {
 
 // ServerUpdate is a function to slb.server.update to a10
 func (c *Client) ServerUpdate(s *Server) error {
-	log.Printf("[INFO] start updating server: %s , host: %s", s.Name, s.Host)
+	c.logger.Printf("[INFO] start updating server: %s , host: %s", s.Name, s.Host)
 	url, err := c.CreateSessionURL(update)
 	if err != nil {
 		return err

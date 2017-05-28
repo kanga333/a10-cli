@@ -191,6 +191,20 @@ func (c *Config) GenerateSGNameAndMembers() ([]client.SGNameAndMember, error) {
 	return sgms, nil
 }
 
+// GetServerName gets server name in config.
+func (c *Config) GetServerName() string {
+	return c.Server.Name
+}
+
+// GetServiceGroupName gets service group name in config.
+func (c *Config) GetServiceGroupName() []string {
+	var sgNames []string
+	for _, conf := range c.Server.PortList {
+		sgNames = append(sgNames, conf.SGName)
+	}
+	return sgNames
+}
+
 func validFail(n, v string) error {
 	return fmt.Errorf("failed validation of the value: %s of the parameter: %s", v, n)
 }

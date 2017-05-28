@@ -3,7 +3,6 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
 const (
@@ -51,7 +50,7 @@ type Member struct {
 
 //ServiceGroupMemberCreate is a function to slb.service_group.member.create to a10.
 func (c *Client) ServiceGroupMemberCreate(m *SGNameAndMember) error {
-	log.Printf("[INFO] start creating member: %s to sg: %s", m.Member.Server, m.Name)
+	c.logger.Printf("[INFO] start creating member: %s to sg: %s", m.Member.Server, m.Name)
 
 	url, err := c.CreateSessionURL(memberCreate)
 	if err != nil {
@@ -74,7 +73,7 @@ func (c *Client) ServiceGroupMemberCreate(m *SGNameAndMember) error {
 
 //ServiceGroupMemberDelete is a function to slb.service_group.member.delete to a10.
 func (c *Client) ServiceGroupMemberDelete(m *SGNameAndMember) error {
-	log.Printf("[INFO] start deleting member: %s in sg: %s", m.Member.Server, m.Name)
+	c.logger.Printf("[INFO] start deleting member: %s in sg: %s", m.Member.Server, m.Name)
 
 	url, err := c.CreateSessionURL(memberDelete)
 	if err != nil {
@@ -97,7 +96,7 @@ func (c *Client) ServiceGroupMemberDelete(m *SGNameAndMember) error {
 
 //ServiceGroupSearch is a function to slb.service_group.search to a10.
 func (c *Client) ServiceGroupSearch(n string) (*ServiceGroup, error) {
-	log.Printf("[INFO] start serching sg: %s", n)
+	c.logger.Printf("[INFO] start serching sg: %s", n)
 
 	url, err := c.CreateSessionURL(sgSearch)
 	if err != nil {
@@ -136,7 +135,7 @@ func (c *Client) ServiceGroupSearch(n string) (*ServiceGroup, error) {
 
 //SGMemberSearch is a function to search for the specified member in ServiceGroup.
 func (c *Client) SGMemberSearch(sg *ServiceGroup, server string) *Member {
-	log.Printf("[INFO] start serching member: %s in sg: %s", server, sg.Name)
+	c.logger.Printf("[INFO] start serching member: %s in sg: %s", server, sg.Name)
 
 	for _, m := range sg.MemberList {
 		if m.Server == server {
