@@ -2,7 +2,6 @@ package command
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/ghodss/yaml"
@@ -14,20 +13,20 @@ import (
 func CmdDump(c *cli.Context) {
 	conf, err := config.LoadConf(c.GlobalString("config"))
 	if err != nil {
-		log.Printf("[ERR] failed to read configuration file: %s", err)
+		fmt.Fprintf(os.Stderr, "failed to read configuration file: %s", err)
 		os.Exit(1)
 	}
 
 	a10, err := newAuthorizedClientwithFromConfig(conf)
 	if err != nil {
-		log.Printf("[ERR] failed to create authorized client: %s", err)
+		fmt.Fprintf(os.Stderr, "failed to create authorized client: %s", err)
 		os.Exit(1)
 	}
 	defer a10.Close()
 
 	server, err := conf.GenerateServer()
 	if err != nil {
-		log.Printf("[ERR] failed to create server from config: %s", err)
+		fmt.Fprintf(os.Stderr, "failed to create server from config: %s", err)
 		os.Exit(1)
 	}
 
@@ -41,7 +40,7 @@ func CmdDump(c *cli.Context) {
 
 	sgs, err := conf.GenerateSGNameAndMembers()
 	if err != nil {
-		log.Printf("[ERR] failed to create service groups from config: %s", err)
+		fmt.Fprintf(os.Stderr, "failed to create service groups from config: %s", err)
 		os.Exit(1)
 	}
 	for _, v := range sgs {
