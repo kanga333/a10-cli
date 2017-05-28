@@ -12,12 +12,11 @@ import (
 )
 
 const templ = `ServerStatus: ({{.Status | boolToState}})
-
 Name:	{{.Name}}
 Host:	{{.Host}}
 Weight:	{{.Weight}}
 
-PortStatus
+PortStatus:
 {{range .PortList}}
 PortNum:	{{.PortNum}}({{.Status | boolToState}})
 {{end}}
@@ -37,11 +36,18 @@ func CmdStatus(c *cli.Context) {
 	}
 	defer a10.Close()
 
-	s, err := a10.ServerSearch(conf.Server.Host)
+	host := conf.GetServerHost()
+
+	s, err := a10.ServerSearch(host)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to search the server: %s\n", err)
 		os.Exit(1)
 	}
+	if s.Host == "" {
+		fmt.Fprintf(os.Stderr, "server %s is not exist\n", host)
+		os.Exit(0)
+	}
+
 	printStatus(s)
 }
 
