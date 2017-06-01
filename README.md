@@ -7,7 +7,7 @@ A10cli is a cli tool to the slb of acos 2.7.
 
 ```console
 
-a10-cli -h
+$ a10-cli -h
 NAME:
    a10-cli
 
